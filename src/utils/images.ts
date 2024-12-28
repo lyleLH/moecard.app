@@ -6,7 +6,8 @@ const load = async function () {
   let images: Record<string, () => Promise<unknown>> | undefined = undefined;
   try {
     images = import.meta.glob(
-      '../assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}'
+      '/src/assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}',
+      { eager: true }
     );
   } catch (error) {
     console.warn('Error loading images:', error);
@@ -26,28 +27,21 @@ export const fetchLocalImages = async () => {
 export const findImage = async (
   imagePath?: string | ImageMetadata | null
 ): Promise<string | ImageMetadata | undefined | null> => {
-  // Not string
   if (typeof imagePath !== 'string') {
     return imagePath;
   }
 
-  // Absolute paths
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('/')) {
     return imagePath;
   }
 
-  // Relative paths or not "~/assets/"
-  if (!imagePath.startsWith('~/assets/images') && !imagePath.startsWith('../assets/images')) {
-    return imagePath;
-  }
+  const normalizedPath = imagePath
+    .replace('~/', '/src/')
+    .replace('../assets/', '/src/assets/');
 
   const images = await fetchLocalImages();
-  const key = imagePath
-    .replace('~/', '../')
-    .replace('/src/assets/', '../assets/');
-
-  return images && typeof images[key] === 'function'
-    ? ((await images[key]()) as { default: ImageMetadata })['default']
+  return images && typeof images[normalizedPath] === 'function'
+    ? ((await images[normalizedPath]()) as { default: ImageMetadata })['default']
     : null;
 };
 
@@ -116,14 +110,14 @@ export const adaptOpenGraphImages = async (
 export async function getSampleImages() {
   try {
     const files = import.meta.glob<{ default: ImageMetadata }>(
-      '../assets/images/samples/*.{png,jpg,jpeg,webp}',
+      '/src/assets/images/samples/*.{png,jpg,jpeg,webp}',
       {
         eager: true,
       }
     );
 
     if (Object.keys(files).length === 0) {
-      console.warn('No sample images found in assets/images/samples/ directory');
+      console.warn('No sample images found in /src/assets/images/samples/ directory');
       return [];
     }
 
@@ -131,11 +125,9 @@ export async function getSampleImages() {
       const fileName = path.split('/').pop() || '';
       const title = fileName.split('.')[0];
       
-      const normalizedPath = path.replace('../', '/src/');
-      
       return {
         title,
-        image: normalizedPath,
+        image: path,
         tags: ['用户作品']
       };
     });

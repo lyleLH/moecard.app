@@ -1,4 +1,9 @@
 ---
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import 'swiper/css/pagination';
+import 'swiper/css/grid';
+import 'photoswipe/style.css';
 import Twemoji from '../common/Twemoji.astro';
 
 interface Props {
@@ -22,260 +27,212 @@ const {
   images = [],
   classes = {},
 } = Astro.props;
-
-// 分组图片
-const firstRow = images.filter((_, i) => i % 2 === 0).slice(0, 8);
-const secondRow = images.filter((_, i) => i % 2 === 1).slice(0, 8);
-
-// 计算动画持续时间
-const animationDuration = Math.max(20, Math.min(firstRow.length * 5, 30));
 ---
 
-<section class:list={['relative', classes?.container]}>
+<section class:list={['relative overflow-hidden', classes?.container]}>
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     {title && (
-      <h2 class:list={['text-center mb-4', classes?.title]}>
+      <h2 class:list={['text-center mb-4 flex items-center justify-center gap-2', classes?.title]}>
+        <Twemoji emoji="🎨" />
         {title}
       </h2>
     )}
     {subtitle && (
-      <p class:list={['text-center mb-12', classes?.subtitle]}>
+      <p class:list={['text-center mb-8', classes?.subtitle]}>
         {subtitle}
       </p>
     )}
     
-    <div class="space-y-8">
-      <!-- 第一行 向左滚动 -->
-      <div class="overflow-hidden">
-        <div class="scroll-row flex gap-4" style={`animation-duration: ${animationDuration}s`}>
-          {[...firstRow, ...firstRow].map((image) => (
-            <div 
-              class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
-              data-src={image.src}
+    <!-- 滑动提示 -->
+    <div class="text-center mb-8 text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
+      <Twemoji emoji="👆" />
+      <span>左右滑动查看更多精彩作品</span>
+      <Twemoji emoji="✨" />
+    </div>
+    
+    <div class="swiper gallery-swiper">
+      <div class="swiper-wrapper">
+        {images.map((image) => (
+          <div class="swiper-slide">
+            <a 
+              href={image.src}
+              class="gallery-item block relative group overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300"
+              data-pswp-width="1200"
+              data-pswp-height="1600"
             >
               <div class="aspect-[3/4]">
                 <img
                   src={image.src}
                   alt={image.alt}
-                  width={320}
-                  height={427}
-                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  loading="eager"
-                  decoding="async"
-                />
-                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <!-- 第二行 向右滚动 -->
-      <div class="overflow-hidden">
-        <div class="scroll-row flex gap-4" style={`animation-duration: ${animationDuration}s`}>
-          {[...secondRow, ...secondRow].map((image) => (
-            <div 
-              class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
-              data-src={image.src}
-            >
-              <div class="aspect-[3/4]">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  width={320}
-                  height={427}
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                   decoding="async"
                 />
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
-            </div>
-          ))}
-        </div>
+            </a>
+          </div>
+        ))}
       </div>
     </div>
-  </div>
-
-  <!-- 全屏查看模态框 -->
-  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center">
-    <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" id="closeModal">
-      <Twemoji emoji="❌" size="1.2em" />
-    </button>
-    <div class="relative w-full h-full flex items-center justify-center">
-      <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain opacity-0 transition-opacity duration-300" src="" alt="Full screen image" />
-      <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white" id="prevImage">
-        <Twemoji emoji="⬅️" size="2em" />
-      </button>
-      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white" id="nextImage">
-        <Twemoji emoji="➡️" size="2em" />
-      </button>
-      <div id="loadingIndicator" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
-      </div>
-    </div>
+    
+    <!-- 分页指示器 -->
+    <div class="swiper-pagination mt-8"></div>
   </div>
 </section>
 
+<script>
+import Swiper from 'swiper';
+import { Grid, Pagination, Autoplay } from 'swiper/modules';
+import PhotoSwipe from 'photoswipe';
+import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+// 初始化 Swiper
+new Swiper('.gallery-swiper', {
+  modules: [Grid, Pagination, Autoplay],
+  slidesPerView: 1.2,
+  grid: {
+    rows: 2,
+    fill: 'row'
+  },
+  spaceBetween: 16,
+  centeredSlides: true,
+  loop: true,
+  speed: 1000,
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false,
+    pauseOnMouseEnter: true,
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+    dynamicBullets: true,
+    dynamicMainBullets: 3,
+    renderBullet: function (index, className) {
+      return '<span class="' + className + '"><span class="dot"></span></span>';
+    },
+  },
+  breakpoints: {
+    640: {
+      slidesPerView: 2.2,
+      spaceBetween: 20,
+    },
+    768: {
+      slidesPerView: 3.2,
+      spaceBetween: 24,
+    },
+    1024: {
+      slidesPerView: 4.2,
+      spaceBetween: 24,
+    },
+  },
+});
+
+// 初始化 PhotoSwipe
+const lightbox = new PhotoSwipeLightbox({
+  gallery: 'section',
+  children: '.gallery-item',
+  pswpModule: PhotoSwipe,
+  padding: { top: 30, bottom: 30, left: 10, right: 10 },
+  bgOpacity: 0.9,
+  showHideAnimationType: 'fade',
+});
+
+lightbox.init();
+</script>
+
 <style>
-@keyframes scrollLeft {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-320px * 8 - 1rem * 8));
-  }
+/* Swiper 自定义样式 */
+.swiper {
+  width: 100%;
+  padding: 32px 0;
 }
 
-@keyframes scrollRight {
-  0% {
-    transform: translateX(calc(-320px * 8 - 1rem * 8));
+.swiper-slide {
+  height: calc((100% - 16px) / 2) !important;
+  transition: transform 0.3s;
+}
+
+:global(.swiper-slide-active) {
+  transform: scale(1.05);
+}
+
+/* 分页器样式 */
+:global(.swiper-pagination) {
+  position: relative !important;
+  bottom: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+:global(.swiper-pagination-bullet) {
+  width: 32px !important;
+  height: 32px !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:global(.swiper-pagination-bullet .dot) {
+  width: 10px;
+  height: 10px;
+  background: #D1D5DB;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+:global(.swiper-pagination-bullet-active) {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-radius: 50%;
+}
+
+:global(.swiper-pagination-bullet-active .dot) {
+  background: #10B981;
+  transform: scale(1.2);
+}
+
+/* PhotoSwipe 自定义主题 */
+:global(.pswp) {
+  --pswp-bg: #000;
+  --pswp-error-text-color: #fff;
+  --pswp-icon-color: #fff;
+  --pswp-icon-color-secondary: #4b5563;
+}
+
+:global(.pswp__counter) {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+:global(.pswp__button) {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+:global(.pswp__button:hover) {
+  opacity: 1;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .swiper {
+    padding: 16px 0;
   }
-  100% {
-    transform: translateX(0);
+  
+  .swiper-slide {
+    height: calc((100% - 8px) / 2) !important;
   }
-}
 
-.scroll-row {
-  animation: scrollLeft linear infinite;
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.scroll-row:nth-child(even) {
-  animation-name: scrollRight;
-}
-
-.scroll-row:hover {
-  animation-play-state: paused;
+  :global(.swiper-pagination-bullet) {
+    width: 24px !important;
+    height: 24px !important;
+  }
 }
 </style>
-
-<script>
-interface GalleryItem extends HTMLElement {
-  querySelector(selector: string): HTMLImageElement | null;
-}
-
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('imageModal') as HTMLDivElement;
-  const modalImg = document.getElementById('modalImage') as HTMLImageElement;
-  const loadingIndicator = document.getElementById('loadingIndicator') as HTMLDivElement;
-  const galleryItems = document.querySelectorAll<GalleryItem>('.gallery-item');
-  let currentImageIndex = 0;
-
-  if (!modal || !modalImg || !loadingIndicator) {
-    console.error('Required elements not found');
-    return;
-  }
-
-  // 显示大图
-  async function showImage(index: number) {
-    const items = Array.from(galleryItems);
-    if (index < 0 || index >= items.length) return;
-    
-    currentImageIndex = index;
-    if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-    if (modalImg) modalImg.classList.add('opacity-0');
-
-    try {
-      const src = items[index].getAttribute('data-src');
-      if (!src || !modalImg || !loadingIndicator) return;
-      
-      modalImg.src = src;
-      const imgElement = items[index].querySelector('img');
-      modalImg.alt = imgElement ? imgElement.alt : '';
-      modalImg.onload = () => {
-        if (modalImg && loadingIndicator) {
-          modalImg.classList.remove('opacity-0');
-          loadingIndicator.classList.add('hidden');
-        }
-      };
-    } catch (error) {
-      console.error('Failed to load image:', error);
-      if (loadingIndicator) loadingIndicator.classList.add('hidden');
-    }
-  }
-
-  // 初始化图片点击事件
-  galleryItems.forEach((item, index) => {
-    item.addEventListener('click', () => {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-      showImage(index);
-    });
-  });
-
-  // 模态框控制
-  const closeBtn = document.getElementById('closeModal');
-  const prevImgBtn = document.getElementById('prevImage');
-  const nextImgBtn = document.getElementById('nextImage');
-
-  closeBtn?.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = '';
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      document.body.style.overflow = '';
-    }
-  });
-
-  prevImgBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const items = Array.from(galleryItems);
-    showImage((currentImageIndex - 1 + items.length) % items.length);
-  });
-
-  nextImgBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const items = Array.from(galleryItems);
-    showImage((currentImageIndex + 1) % items.length);
-  });
-
-  // 键盘控制
-  document.addEventListener('keydown', (e) => {
-    if (!modal.classList.contains('hidden')) {
-      const items = Array.from(galleryItems);
-      switch(e.key) {
-        case 'Escape':
-          modal.classList.add('hidden');
-          modal.classList.remove('flex');
-          document.body.style.overflow = '';
-          break;
-        case 'ArrowLeft':
-          showImage((currentImageIndex - 1 + items.length) % items.length);
-          break;
-        case 'ArrowRight':
-          showImage((currentImageIndex + 1) % items.length);
-          break;
-      }
-    }
-  });
-
-  // 使用 Intersection Observer 优化滚动性能
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        const row = entry.target as HTMLElement;
-        if (entry.isIntersecting && row.style) {
-          row.style.animationPlayState = 'running';
-        } else if (row.style) {
-          row.style.animationPlayState = 'paused';
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  document.querySelectorAll('.scroll-row').forEach(row => {
-    observer.observe(row);
-  });
-});
-</script>

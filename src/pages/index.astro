@@ -1,7 +1,7 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero2 from '~/components/widgets/Hero2.astro';
+import Hero from '~/components/widgets/Hero.astro';
 import Features3 from '~/components/widgets/Features3.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
@@ -46,7 +46,7 @@ const metadata = {
 
   <!-- Hero Section -->
   <div class="relative pt-32 pb-20">
-    <Hero2
+    <Hero
       tagline="让创作更有趣"
     >
       <Fragment slot="title">
@@ -77,7 +77,7 @@ const metadata = {
           了解更多
         </Button>
       </div>
-    </Hero2>
+    </Hero>
   </div>
 
   <!-- Features Section -->

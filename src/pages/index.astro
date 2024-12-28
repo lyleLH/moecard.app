@@ -3,10 +3,10 @@ import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Hero2 from '~/components/widgets/Hero2.astro';
 import Features3 from '~/components/widgets/Features3.astro';
-import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
 import Gallery from '~/components/widgets/Gallery.astro';
+import MoeProFeature from '~/components/widgets/MoeProFeature.astro';
 
 // 导入所有示例图片
 const sampleImages = await Astro.glob('../assets/images/samples/*.JPG');
@@ -89,7 +89,7 @@ const metadata = {
     items={[
       {
         title: '丰富表情',
-        description: '内置完整的 Twemoji 表情包，让设计更有趣',
+        description: '内��完整的 Twemoji 表情包，让设计更有趣',
         icon: 'tabler:mood-smile',
       },
       {
@@ -143,38 +143,14 @@ const metadata = {
   </div>
 
   <!-- Pro Features -->
-  <Content
+  <MoeProFeature
     id="pro"
-    isReversed
-    title="会员特权"
-    subtitle="解锁更多高级功能"
-    classes={{ container: 'max-w-6xl py-16', title: 'text-3xl font-bold' }}
-    items={[
-      {
-        title: '完整表情包',
-        description: '解锁所有表情，让创作更丰富',
-        icon: 'tabler:mood-smile',
-      },
-      {
-        title: '自定义素材',
-        description: '无限量上传素材，创作无拘束',
-        icon: 'tabler:photo',
-      },
-      {
-        title: '无水印导出',
-        description: '专业级作品导出，展示更完美',
-        icon: 'tabler:download',
-      },
-      {
-        title: '字体管理',
-        description: '自由导���字体，打造专属风格',
-        icon: 'tabler:typography',
-      },
-    ]}
     classes={{
-      container: 'bg-gray-50 dark:bg-slate-800',
-      panel: 'bg-white dark:bg-slate-900 shadow-md rounded-lg p-6',
-      icon: 'text-green-500 dark:text-green-400'
+      container: 'max-w-6xl py-16',
+      headline: {
+        title: 'text-3xl font-bold text-center',
+        subtitle: 'text-xl text-gray-600 dark:text-gray-400 text-center'
+      }
     }}
   />
 

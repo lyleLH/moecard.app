@@ -1,0 +1,69 @@
+---
+import Headline from '~/components/ui/Headline.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
+
+const {
+  title = '会员特权',
+  subtitle = '解锁更多精彩功能',
+  tagline = '尊享特权',
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+
+const features = [
+  {
+    title: '无限卡片制作',
+    description: '解锁无限制的卡片制作功能，尽情发挥创意',
+    icon: 'tabler:palette',
+    color: 'text-blue-600',
+  },
+  {
+    title: '专属模板',
+    description: '独享精心设计的高级模板库，让你的卡片与众不同',
+    icon: 'tabler:layout-grid',
+    color: 'text-green-600',
+  },
+  {
+    title: '高级定制',
+    description: '解锁更多自定义选项，打造完全个性化的卡片',
+    icon: 'tabler:brush',
+    color: 'text-purple-600',
+  },
+  {
+    title: '优先支持',
+    description: '获得专属客服支持，问题优先解决',
+    icon: 'tabler:heart-handshake',
+    color: 'text-orange-600',
+  }
+];
+---
+
+<WidgetWrapper
+  isDark={isDark}
+  bg={bg}
+>
+  <Headline
+    title={title}
+    subtitle={subtitle}
+    tagline={tagline}
+    classes={classes?.headline as Record<string, string>}
+  />
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6 py-8">
+    {
+      features.map(({ title, description, icon, color }) => (
+        <div class="relative flex flex-col p-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg hover:shadow-xl transition duration-200 border border-transparent dark:border-slate-800">
+          <div class={`mb-4 ${color}`}>
+            <Icon name={icon} class="w-12 h-12" />
+          </div>
+          <div class="flex-grow">
+            <h3 class="text-xl font-bold mb-2">{title}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">{description}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</WidgetWrapper> 

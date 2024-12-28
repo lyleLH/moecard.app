@@ -30,9 +30,14 @@ const particles = Array.from({ length: 15 }, () => ({
 // 示例卡片数据
 const cards = [
 {
-    title: "卡片预览",
-    description: "实时预览功能，所见即所得",
+    title: "精美交互",
+    description: "手势和动画简单纯粹",
     image: "https://i.postimg.cc/ZqhJ5KLd/moecard-preview.webp"
+  },
+  {
+    title: "文本编辑器",
+    description: "轻松简单的文本编辑工具，支持多种格式和样式",
+    image: "https://i.postimg.cc/8csS0FTq/texteditor.webp"
   },
   {
     title: "专业功能",
@@ -50,15 +55,9 @@ const cards = [
     image: "https://i.postimg.cc/TwdGn7F2/drafts.webp"
   },
   {
-    title: "智能图像处理",
+    title: "自定义素材库",
     description: "内置图像制作和选择工具，让创作更加便捷",
     image: "https://i.postimg.cc/Hx6mz01w/imagemakerandpicker.webp"
-  },
-
-  {
-    title: "文本编辑器",
-    description: "专业的文本编辑工具，支持多种格式和样式",
-    image: "https://i.postimg.cc/8csS0FTq/texteditor.webp"
   }
 ];
 ---
@@ -186,7 +185,7 @@ const cards = [
             <div class="w-16 h-16 relative">
               <Image 
                 src={logoSvg}
-                alt="MoeCard Logo" 
+                alt="MoCard Logo" 
                 class="w-full h-full object-contain rounded-2xl shadow-lg"
                 style={{
                   filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
@@ -194,7 +193,7 @@ const cards = [
               />
             </div>
             <div class="ml-4">
-              <h2 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">MoeCard</h2>
+              <h2 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">MoE Card</h2>
               <p class="text-sm text-gray-600 dark:text-gray-300">让创作更有趣</p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 site:
-  name: AxisT Studio
-  site: 'https://axiststudio.com'
+  name: MoE Card App
+  site: 'https://moecard.app'
   base: '/'
   trailingSlash: false
 

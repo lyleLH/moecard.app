@@ -112,11 +112,7 @@ export const headerData = {
     },
     {
       text: 'Widgets',
-      href: '',
-    },
-    {
-      text: 'Blog',
-      href: getPermalink('markdown-elements-demo-post', 'post')
+      href: '#',
     },
   ],
   actions: [{ text: 'Download', href: 'https://github.com/onwidget/astrowind', target: '_blank' }],

@@ -1,0 +1,258 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  images: {
+    src: string;
+    alt: string;
+  }[];
+  classes?: {
+    container?: string;
+    title?: string;
+    subtitle?: string;
+    grid?: string;
+  };
+}
+
+const {
+  title = '',
+  subtitle = '',
+  images = [],
+  classes = {},
+} = Astro.props;
+
+// 将图片分成两组
+const firstRow = images.filter((_, i) => i % 2 === 0);
+const secondRow = images.filter((_, i) => i % 2 === 1);
+---
+
+<section class:list={['relative', classes?.container]}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    {title && (
+      <h2 class:list={['text-center mb-4', classes?.title]}>
+        {title}
+      </h2>
+    )}
+    {subtitle && (
+      <p class:list={['text-center mb-12', classes?.subtitle]}>
+        {subtitle}
+      </p>
+    )}
+    
+    <div class="space-y-8">
+      <!-- 第一行 向左滚动 -->
+      <div class="overflow-hidden">
+        <div class="scroll-row flex gap-4 animate-scroll-left">
+          {[...firstRow, ...firstRow].map((image) => (
+            <div 
+              class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
+              data-src={image.src.src}
+            >
+              <div class="aspect-[3/4]">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={800}
+                  height={1067}
+                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                  quality={90}
+                />
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 第二行 向右滚动 -->
+      <div class="overflow-hidden">
+        <div class="scroll-row flex gap-4 animate-scroll-right">
+          {[...secondRow, ...secondRow].map((image) => (
+            <div 
+              class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
+              data-src={image.src.src}
+            >
+              <div class="aspect-[3/4]">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={800}
+                  height={1067}
+                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                  quality={90}
+                />
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全屏查看模态框 -->
+  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center">
+    <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" id="closeModal">&times;</button>
+    <div class="relative w-full h-full flex items-center justify-center">
+      <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain" src="" alt="Full screen image" />
+      <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="prevImage">&lt;</button>
+      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="nextImage">&gt;</button>
+      <div id="loadingIndicator" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes scrollRight {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-scroll-left {
+    animation: scrollLeft 60s linear infinite;
+  }
+
+  .animate-scroll-right {
+    animation: scrollRight 60s linear infinite;
+  }
+
+  .scroll-row:hover {
+    animation-play-state: paused;
+  }
+
+  #modalImage {
+    transition: opacity 0.3s ease;
+  }
+  
+  .opacity-0 {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  let currentImageIndex = 0;
+  let allImages: string[] = [];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('imageModal') as HTMLDivElement;
+    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
+    const loadingIndicator = document.getElementById('loadingIndicator') as HTMLDivElement;
+    const closeBtn = document.getElementById('closeModal') as HTMLButtonElement;
+    const prevBtn = document.getElementById('prevImage') as HTMLButtonElement;
+    const nextBtn = document.getElementById('nextImage') as HTMLButtonElement;
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    // 收集所有图片URL
+    allImages = Array.from(galleryItems)
+      .map(item => item.getAttribute('data-src'))
+      .filter((src): src is string => src !== null);
+
+    function showImage(index: number) {
+      currentImageIndex = index;
+      if (modalImg && index >= 0 && index < allImages.length) {
+        loadingIndicator.classList.remove('hidden');
+        modalImg.classList.add('opacity-0');
+        
+        const newImage = new Image();
+        newImage.onload = () => {
+          modalImg.src = newImage.src;
+          modalImg.classList.remove('opacity-0');
+          loadingIndicator.classList.add('hidden');
+        };
+        newImage.src = allImages[index];
+      }
+    }
+
+    function showNextImage() {
+      showImage((currentImageIndex + 1) % allImages.length);
+    }
+
+    function showPrevImage() {
+      showImage((currentImageIndex - 1 + allImages.length) % allImages.length);
+    }
+
+    if (modal && modalImg && closeBtn && prevBtn && nextBtn) {
+      galleryItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          document.body.style.overflow = 'hidden';
+          showImage(index);
+        });
+      });
+
+      closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          document.body.style.overflow = '';
+        }
+      });
+
+      prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrevImage();
+      });
+
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNextImage();
+      });
+
+      // 键盘控制
+      document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('hidden')) {
+          switch(e.key) {
+            case 'Escape':
+              modal.classList.add('hidden');
+              modal.classList.remove('flex');
+              document.body.style.overflow = '';
+              break;
+            case 'ArrowLeft':
+              showPrevImage();
+              break;
+            case 'ArrowRight':
+              showNextImage();
+              break;
+          }
+        }
+      });
+    }
+  });
+
+  // 暂停和恢复动画
+  const rows = document.querySelectorAll('.scroll-row');
+  rows.forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      (row as HTMLElement).style.animationPlayState = 'paused';
+    });
+    row.addEventListener('mouseleave', () => {
+      (row as HTMLElement).style.animationPlayState = 'running';
+    });
+  });
+</script> 

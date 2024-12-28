@@ -1,15 +1,6 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/_astro/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ]
+  "buildCommand": "NODE_OPTIONS='--max-old-space-size=4096' astro build",
+  "installCommand": "npm install",
+  "framework": "astro",
+  "outputDirectory": "dist"
 }

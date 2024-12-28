@@ -50,22 +50,29 @@ export default defineConfig({
     },
     build: {
       cssCodeSplit: false,
-      minify: false,
+      minify: 'esbuild',
       sourcemap: false,
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              return 'vendor';
-            }
+          manualChunks: {
+            'vendor': ['astro', '@astrojs/tailwind'],
+            'icons': ['astro-icon'],
+            'utils': ['./src/utils/'],
           },
           inlineDynamicImports: false,
         },
-        treeshake: true,
+        treeshake: {
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false
+        }
       }
     },
     optimizeDeps: {
       exclude: ['@astrojs/mdx', 'astro-compress', '@astrojs/partytown']
+    },
+    ssr: {
+      noExternal: ['@astrojs/mdx', 'astro-compress', '@astrojs/partytown']
     }
   },
 });

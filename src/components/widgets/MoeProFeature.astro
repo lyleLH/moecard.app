@@ -45,9 +45,14 @@ const features = [
     description: '定期获得专属福利，创作更有动力'
   }
 ];
+
+const baseCardClass = "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg transition-all duration-200";
+const baseIconClass = "flex-shrink-0 mr-4";
+const baseTitleClass = "text-xl font-bold text-gray-900 dark:text-white";
+const baseDescClass = "text-gray-600 dark:text-gray-400 text-base leading-relaxed";
 ---
 
-<section class:list={["relative py-16 overflow-hidden", classes.container]}>
+<section class:list={["relative py-16", classes.container]}>
   <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"></div>
   
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,30 +66,28 @@ const features = [
       </p>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-12 lg:grid-cols-3">
+    <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {features.map(feature => (
-        <div class="relative group">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg transition duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
-            <div class="flex items-center mb-6">
-              <div class="flex-shrink-0">
-                <Twemoji emoji={feature.icon} size="2.5em" class="mr-4" />
-              </div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                {feature.title}
-              </h3>
+        <div class={baseCardClass}>
+          <div class="flex items-center mb-4">
+            <div class={baseIconClass}>
+              <Twemoji emoji={feature.icon} size="2.5em" />
             </div>
-            <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-              {feature.description}
-            </p>
+            <h3 class={baseTitleClass}>
+              {feature.title}
+            </h3>
           </div>
+          <p class={baseDescClass}>
+            {feature.description}
+          </p>
         </div>
       ))}
     </div>
 
-    <div class="mt-16 text-center">
+    <div class="mt-12 text-center">
       <a 
         href="#download" 
-        class="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-green-500 to-green-400 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+        class="inline-flex items-center px-8 py-3 text-lg font-medium text-white bg-gradient-to-r from-green-500 to-green-400 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <Twemoji emoji="✨" size="1.2em" class="mr-2" />
         升级 Pro

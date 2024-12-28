@@ -1,15 +1,15 @@
 import { isUnpicCompatible, unpicOptimizer, astroAsseetsOptimizer } from './images-optimization';
 import type { ImageMetadata } from 'astro';
 import type { OpenGraph } from '@astrolib/seo';
-import { getCollection } from 'astro:content';
 
 const load = async function () {
   let images: Record<string, () => Promise<unknown>> | undefined = undefined;
   try {
-    images = import.meta.glob('~/assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    images = import.meta.glob(
+      '/src/assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}'
+    );
   } catch (error) {
-    // continue regardless of error
+    console.warn('Error loading images:', error);
   }
   return images;
 };
@@ -113,20 +113,30 @@ export const adaptOpenGraphImages = async (
 
 export async function getSampleImages() {
   try {
-    const files = await import.meta.glob('~/assets/images/samples/*.{png,jpg,jpeg,webp}', {
-      eager: true,
-    });
+    const files = import.meta.glob<{ default: ImageMetadata }>(
+      '~/assets/images/samples/*.{png,jpg,jpeg,webp}',
+      {
+        eager: true,
+      }
+    );
 
     if (Object.keys(files).length === 0) {
-      console.warn('No sample images found in samples directory');
+      console.warn('No sample images found in ~/assets/images/samples/ directory');
       return [];
     }
 
-    return Object.entries(files).map(([path, file]) => ({
-      title: path.split('/').pop()?.split('.')[0] || '',
-      image: path,
-      tags: ['用户作品']
-    }));
+    return Object.entries(files).map(([path]) => {
+      const fileName = path.split('/').pop() || '';
+      const title = fileName.split('.')[0];
+      
+      const normalizedPath = path.replace('~/', '/src/');
+      
+      return {
+        title,
+        image: normalizedPath,
+        tags: ['用户作品']
+      };
+    });
   } catch (error) {
     console.error('Error loading sample images:', error);
     return [];

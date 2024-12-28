@@ -1,9 +1,21 @@
 ---
 import { SITE } from 'astrowind:config';
-import Twemoji from './common/Twemoji.astro';
+import { Image } from 'astro:assets';
+import logoSvg from '~/assets/images/logo.svg';
 ---
 
-<span class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white flex items-center">
-  <Twemoji emoji="🎨" size="1.2em" class="mr-1" />
-  {SITE?.name}
-</span>
+<div class="flex items-center">
+  <div class="w-8 h-8">
+    <Image 
+      src={logoSvg}
+      alt={SITE?.name}
+      class="w-full h-full object-contain rounded-lg shadow-md"
+      style={{
+        filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+      }}
+    />
+  </div>
+  <span class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white">
+    {SITE?.name}
+  </span>
+</div>

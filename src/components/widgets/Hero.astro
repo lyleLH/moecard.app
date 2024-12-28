@@ -1,6 +1,9 @@
 ---
-import Image from '~/components/common/Image.astro';
+import { Image } from 'astro:assets';
 import Button from '~/components/ui/Button.astro';
+import StackedCards from './StackedCards.astro';
+import logoSvg from '~/assets/images/logo.svg';
+import mascotImage from '~/assets/images/design.png';
 
 import type { Hero as Props } from '~/types';
 
@@ -8,92 +11,593 @@ const {
   title = await Astro.slots.render('title'),
   subtitle = await Astro.slots.render('subtitle'),
   tagline,
-
   content = await Astro.slots.render('content'),
   actions = await Astro.slots.render('actions'),
   image = await Astro.slots.render('image'),
-
   id,
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+// 生成随机粒子位置和动画延迟
+const particles = Array.from({ length: 15 }, () => ({
+  top: Math.random() * 100,
+  left: Math.random() * 100,
+  size: Math.random() * 4 + 2,
+  delay: Math.random() * 2,
+  duration: Math.random() * 2 + 2
+}));
+
+// 示例卡片数据
+const cards = [
+{
+    title: "卡片预览",
+    description: "实时预览功能，所见即所得",
+    image: "https://i.postimg.cc/ZqhJ5KLd/moecard-preview.webp"
+  },
+  {
+    title: "专业功能",
+    description: "丰富的专业级功能，满足各类创作需求",
+    image: "https://i.postimg.cc/pdYRhb01/pro-function.webp"
+  },
+  {
+    title: "画布编辑",
+    description: "强大的画布编辑功能，支持多种绘图工具和效果",
+    image: "https://i.postimg.cc/vZnQy65y/canvas-sample.webp"
+  },
+  {
+    title: "草稿管理",
+    description: "便捷的草稿管理系统，随时保存和恢复创作进度",
+    image: "https://i.postimg.cc/TwdGn7F2/drafts.webp"
+  },
+  {
+    title: "智能图像处理",
+    description: "内置图像制作和选择工具，让创作更加便捷",
+    image: "https://i.postimg.cc/Hx6mz01w/imagemakerandpicker.webp"
+  },
+
+  {
+    title: "文本编辑器",
+    description: "专业的文本编辑工具，支持多种格式和样式",
+    image: "https://i.postimg.cc/8csS0FTq/texteditor.webp"
+  }
+];
 ---
 
-<section class="relative md:-mt-[76px] not-prose" {...id ? { id } : {}}>
+<section class="relative not-prose min-h-screen" {...id ? { id } : {}}>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
     <slot name="bg">
-      {bg ? <Fragment set:html={bg} /> : null}
+      {
+        bg ? <Fragment set:html={bg} /> : 
+        <div class="absolute inset-0 overflow-hidden">
+          <!-- App 形象装饰 -->
+          <div class="absolute right-[5%] top-[15%] w-48 h-48 opacity-20 dark:opacity-10">
+            <Image
+              src={mascotImage}
+              alt="MoeCard Mascot"
+              class="w-full h-full object-contain animate-float"
+            />
+          </div>
+          <div class="absolute left-[10%] bottom-[20%] w-32 h-32 opacity-20 dark:opacity-10 rotate-[-15deg]">
+            <Image
+              src={mascotImage}
+              alt="MoeCard Mascot"
+              class="w-full h-full object-contain animate-float-delay"
+            />
+          </div>
+          <div class="absolute right-[15%] bottom-[30%] w-40 h-40 opacity-15 dark:opacity-10 rotate-[10deg]">
+            <Image
+              src={mascotImage}
+              alt="MoeCard Mascot"
+              class="w-full h-full object-contain animate-float-reverse"
+            />
+          </div>
+          <div class="absolute left-[20%] top-[25%] w-36 h-36 opacity-15 dark:opacity-10 rotate-[-5deg]">
+            <Image
+              src={mascotImage}
+              alt="MoeCard Mascot"
+              class="w-full h-full object-contain animate-float-slow"
+            />
+          </div>
+          <div class="absolute right-[25%] top-[40%] w-24 h-24 opacity-15 dark:opacity-10 rotate-[15deg]">
+            <Image
+              src={mascotImage}
+              alt="MoeCard Mascot"
+              class="w-full h-full object-contain animate-float-bounce"
+            />
+          </div>
+
+          <!-- 粒子动画 -->
+          <div class="absolute inset-0">
+            {particles.map((particle) => (
+              <div
+                class="absolute w-1 h-1 bg-green-400 dark:bg-green-300 rounded-full animate-particle"
+                style={{
+                  top: `${particle.top}%`,
+                  left: `${particle.left}%`,
+                  width: `${particle.size}px`,
+                  height: `${particle.size}px`,
+                  animationDelay: `${particle.delay}s`,
+                  animationDuration: `${particle.duration}s`
+                }}
+              />
+            ))}
+          </div>
+
+          <!-- 左上角装饰 -->
+          <div class="absolute -left-4 -top-4 w-64 h-64 bg-green-50 dark:bg-green-900/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+          
+          <!-- 右上角装饰 -->
+          <div class="absolute -right-16 -top-16 w-48 h-48">
+            <svg class="w-full h-full text-green-200 dark:text-green-900/30 animate-spin-slow" viewBox="0 0 200 200">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <circle
+                  cx={100 + Math.cos(i * 30 * Math.PI / 180) * 70}
+                  cy={100 + Math.sin(i * 30 * Math.PI / 180) * 70}
+                  r="4"
+                  class="fill-current"
+                />
+              ))}
+            </svg>
+          </div>
+          
+          <!-- 左侧装饰 -->
+          <div class="absolute left-1/4 top-1/4 w-32 h-32">
+            <svg class="w-full h-full text-green-300 dark:text-green-800/30" viewBox="0 0 100 100">
+              <path
+                d="M10,50 Q30,20 50,50 T90,50"
+                class="stroke-current fill-none animate-draw"
+                stroke-width="2"
+                pathLength="100"
+              />
+              <path
+                d="M10,60 Q30,30 50,60 T90,60"
+                class="stroke-current fill-none animate-draw-delay"
+                stroke-width="2"
+                pathLength="100"
+              />
+            </svg>
+          </div>
+          
+          <!-- 右侧装饰 -->
+          <div class="absolute right-1/4 bottom-1/4">
+            <div class="w-24 h-24 rounded-full border-4 border-green-200 dark:border-green-800/30 opacity-50 animate-pulse-slow"></div>
+            <div class="w-16 h-16 rounded-full border-4 border-green-300 dark:border-green-700/30 opacity-50 -mt-20 ml-12 animate-pulse-slow-delay"></div>
+          </div>
+          
+          <!-- 底部装饰 -->
+          <div class="absolute bottom-0 w-full h-24 overflow-hidden">
+            <div class="absolute inset-0 animate-wave">
+              <svg class="w-full h-full text-green-100 dark:text-green-900/20" preserveAspectRatio="none" viewBox="0 0 1440 54">
+                <path d="M0,0 C480,54 960,54 1440,0 L1440,54 L0,54 Z" class="fill-current"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      }
     </slot>
   </div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="pt-0 md:pt-[76px] pointer-events-none"></div>
-    <div class="py-12 md:py-20">
-      <div class="text-center pb-10 md:pb-16 max-w-5xl mx-auto">
-        {
-          tagline && (
-            <p
-              class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-              set:html={tagline}
-            />
-          )
-        }
-        {
-          title && (
-            <h1
-              class="text-5xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-              set:html={title}
-            />
-          )
-        }
-        <div class="max-w-3xl mx-auto">
+
+  <div class="relative mx-auto h-full flex items-center">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+        <!-- 内容区域 -->
+        <div class="w-full md:w-[45%] text-center md:text-left self-center">
+          <div class="flex items-center justify-center md:justify-start mb-6">
+            <div class="w-16 h-16 relative">
+              <Image 
+                src={logoSvg}
+                alt="MoeCard Logo" 
+                class="w-full h-full object-contain rounded-2xl shadow-lg"
+                style={{
+                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
+                }}
+              />
+            </div>
+            <div class="ml-4">
+              <h2 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">MoeCard</h2>
+              <p class="text-sm text-gray-600 dark:text-gray-300">让创作更有趣</p>
+            </div>
+          </div>
           {
-            subtitle && (
+            tagline && (
               <p
-                class="text-xl text-muted mb-6 dark:text-slate-300 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-                set:html={subtitle}
+                class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase mb-2"
+                set:html={tagline}
               />
             )
           }
           {
-            actions && (
-              <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
-                {Array.isArray(actions) ? (
-                  actions.map((action) => (
-                    <div class="flex w-full sm:w-auto">
-                      <Button {...(action || {})} class="w-full sm:mb-0" />
-                    </div>
-                  ))
-                ) : (
-                  <Fragment set:html={actions} />
-                )}
-              </div>
+            title && (
+              <h1
+                class="text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-3 font-heading dark:text-gray-200"
+                set:html={title}
+              />
             )
           }
-        </div>
-        {content && <Fragment set:html={content} />}
-      </div>
-      <div
-        class="intersect-once intercept-no-queue intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-      >
-        {
-          image && (
-            <div class="relative m-auto max-w-5xl">
-              {typeof image === 'string' ? (
-                <Fragment set:html={image} />
-              ) : (
-                <Image
-                  class="mx-auto rounded-md w-full"
-                  widths={[400, 768, 1024, 2040]}
-                  sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-                  loading="eager"
-                  width={1024}
-                  height={576}
-                  {...image}
+          <div class="max-w-3xl md:max-w-none mx-auto">
+            {
+              subtitle && (
+                <p
+                  class="text-lg text-muted mb-4 dark:text-slate-300"
+                  set:html={subtitle}
                 />
-              )}
-            </div>
-          )
-        }
+              )
+            }
+            {
+              actions && (
+                <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-3">
+                  {Array.isArray(actions) ? (
+                    actions.map((action) => (
+                      <div class="flex w-full sm:w-auto">
+                        <Button {...(action || {})} class="w-full sm:mb-0" />
+                      </div>
+                    ))
+                  ) : (
+                    <Fragment set:html={actions} />
+                  )}
+                </div>
+              )
+            }
+          </div>
+          {content && <Fragment set:html={content} />}
+        </div>
+
+        <!-- 卡片堆叠区域 -->
+        <div class="w-full md:w-[55%] relative self-center">
+          <div class="w-full">
+            <StackedCards
+              cards={cards}
+              class="transform hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+import lottie from 'lottie-web';
+
+// 初始化动画
+document.addEventListener('DOMContentLoaded', () => {
+  const elements = {
+    dots: document.getElementById('dots-animation'),
+    curve: document.getElementById('curve-animation'),
+    circles: document.getElementById('circles-animation'),
+    wave: document.getElementById('wave-animation')
+  };
+
+  // 确保所有元素都存在
+  if (!elements.dots || !elements.curve || !elements.circles || !elements.wave) {
+    console.warn('Some animation elements not found');
+    return;
+  }
+
+  // 点阵动画
+  lottie.loadAnimation({
+    container: elements.dots as Element,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: {
+      v: "5.7.4",
+      fr: 30,
+      ip: 0,
+      op: 60,
+      w: 200,
+      h: 200,
+      layers: [{
+        ty: 4,
+        nm: "Dots",
+        ks: {
+          o: { a: 0, k: 70 },
+          r: { a: 1, k: [{ t: 0, s: [0] }, { t: 60, s: [360] }] }
+        },
+        shapes: Array.from({ length: 24 }, (_, i) => ({
+          ty: "el",
+          p: { a: 0, k: [Math.cos(i * 15 * Math.PI / 180) * 80 + 100, Math.sin(i * 15 * Math.PI / 180) * 80 + 100] },
+          s: { a: 0, k: [6, 6] },
+          fl: { c: { a: 0, k: [0.13, 0.8, 0.42] } }
+        }))
+      }]
+    }
+  });
+
+  // 曲线动画
+  lottie.loadAnimation({
+    container: elements.curve as Element,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: {
+      v: "5.7.4",
+      fr: 30,
+      ip: 0,
+      op: 120,
+      w: 100,
+      h: 100,
+      layers: [{
+        ty: 4,
+        nm: "Curve",
+        ks: { o: { a: 0, k: 60 } },
+        shapes: [{
+          ty: "sh",
+          ks: {
+            a: 1,
+            k: [
+              { t: 0, s: [{ c: false, v: [[20,50], [50,20], [80,50]] }] },
+              { t: 60, s: [{ c: false, v: [[20,50], [50,80], [80,50]] }] },
+              { t: 120, s: [{ c: false, v: [[20,50], [50,20], [80,50]] }] }
+            ]
+          },
+          st: { w: 3, c: [0.13, 0.8, 0.42] }
+        }]
+      }]
+    }
+  });
+
+  // 圆环动画
+  lottie.loadAnimation({
+    container: elements.circles as Element,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: {
+      v: "5.7.4",
+      fr: 30,
+      ip: 0,
+      op: 90,
+      w: 100,
+      h: 100,
+      layers: [{
+        ty: 4,
+        nm: "Circles",
+        ks: {
+          o: { a: 0, k: 50 },
+          s: { a: 1, k: [
+            { t: 0, s: [100, 100] },
+            { t: 45, s: [110, 110] },
+            { t: 90, s: [100, 100] }
+          ]}
+        },
+        shapes: [
+          {
+            ty: "el",
+            p: { a: 0, k: [50, 50] },
+            s: { a: 0, k: [80, 80] },
+            st: { w: 3, c: [0.13, 0.8, 0.42] }
+          }
+        ]
+      }]
+    }
+  });
+
+  // 波浪动画
+  lottie.loadAnimation({
+    container: elements.wave as Element,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: {
+      v: "5.7.4",
+      fr: 30,
+      ip: 0,
+      op: 180,
+      w: 1440,
+      h: 100,
+      layers: [{
+        ty: 4,
+        nm: "Wave",
+        ks: { o: { a: 0, k: 30 } },
+        shapes: [{
+          ty: "sh",
+          ks: {
+            a: 1,
+            k: [
+              { t: 0, s: [{ c: true, v: [[0,50], [480,0], [960,50], [1440,0], [1440,100], [0,100]] }] },
+              { t: 90, s: [{ c: true, v: [[0,0], [480,50], [960,0], [1440,50], [1440,100], [0,100]] }] },
+              { t: 180, s: [{ c: true, v: [[0,50], [480,0], [960,50], [1440,0], [1440,100], [0,100]] }] }
+            ]
+          },
+          fl: { c: { a: 0, k: [0.13, 0.8, 0.42, 0.15] } }
+        }]
+      }]
+    }
+  });
+});
+</script>
+
+<style>
+/* 自定义动画关键帧 */
+@keyframes particle {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--tx, 100px), var(--ty, -100px)) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--tx, 100px) * 2), calc(var(--ty, -100px) * 2)) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes draw {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0) translateZ(0);
+  }
+  50% {
+    transform: translateX(-25%) translateZ(0);
+  }
+  100% {
+    transform: translateX(-50%) translateZ(0);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* 动画类 */
+.animate-particle {
+  --tx: random(-100, 100);
+  --ty: random(-100, 100);
+  animation: particle var(--duration, 3s) ease-out infinite;
+  animation-delay: var(--delay, 0s);
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-draw {
+  animation: draw 3s ease-out forwards;
+}
+
+.animate-draw-delay {
+  animation: draw 3s ease-out 0.5s forwards;
+}
+
+.animate-wave {
+  animation: wave 10s linear infinite;
+  width: 200%;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-pulse-slow-delay {
+  animation: pulse-slow 4s ease-in-out 2s infinite;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .dark\:text-green-900\/20 {
+    color: rgb(20 83 45 / 0.2);
+  }
+  .dark\:text-green-900\/30 {
+    color: rgb(20 83 45 / 0.3);
+  }
+  .dark\:text-green-800\/30 {
+    color: rgb(20 83 45 / 0.3);
+  }
+  .dark\:text-green-700\/30 {
+    color: rgb(20 83 45 / 0.3);
+  }
+}
+
+/* 添加浮动动画 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+@keyframes float-delay {
+  0%, 100% {
+    transform: translateY(0) rotate(-15deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-10deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0) rotate(10deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(15deg);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) rotate(0deg) scale(1.05);
+  }
+}
+
+@keyframes float-bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(15deg) scale(1);
+  }
+  40% {
+    transform: translateY(-15px) rotate(10deg) scale(1.1);
+  }
+  60% {
+    transform: translateY(-15px) rotate(20deg) scale(1.1);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float-delay 7s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 8s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+.animate-float-bounce {
+  animation: float-bounce 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+</style>
+
+<script>
+// 为每个粒子设置随机运动方向
+document.addEventListener('DOMContentLoaded', () => {
+  const particles = document.querySelectorAll('.animate-particle');
+  particles.forEach(particle => {
+    const tx = (Math.random() - 0.5) * 200; // -100 到 100 之间的随机值
+    const ty = (Math.random() - 0.5) * 200;
+    particle.style.setProperty('--tx', `${tx}px`);
+    particle.style.setProperty('--ty', `${ty}px`);
+  });
+});
+</script>

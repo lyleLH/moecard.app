@@ -1,0 +1,390 @@
+---
+interface Card {
+  title: string;
+  description: string;
+  image: string;
+}
+
+interface Props {
+  cards: Card[];
+  class?: string;
+}
+
+const { cards, class: className = '' } = Astro.props;
+---
+
+<div class:list={['stacked-cards-container', className]} id="stacked-cards">
+  <div class="cards-wrapper">
+    {
+      cards.map((card, index) => (
+        <div
+          class="card"
+          style={`--index: ${index}; --total: ${cards.length};`}
+          data-card-index={index}
+          data-image={card.image}
+        >
+          <div class="card-content">
+            <div class="card-image-wrapper">
+              <img
+                src={card.image}
+                alt={card.title}
+                class="card-image"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">{card.title}</h3>
+              <p class="card-description">{card.description}</p>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox">
+  <button class="lightbox-close">&times;</button>
+  <img id="lightbox-image" src="" alt="" />
+</div>
+
+<style>
+  .stacked-cards-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 480px;
+    perspective: 2000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cards-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    position: absolute;
+    width: 360px;
+    height: 480px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1),
+      0 1px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-origin: center;
+    cursor: pointer;
+    transform: translateX(calc(var(--index) * 80px - 50%)) 
+               translateZ(calc(var(--index) * -60px))
+               rotateY(calc(var(--index) * 5deg));
+    overflow: hidden;
+  }
+
+  .card:hover {
+    transform: translateX(calc(var(--index) * 80px - 50%)) 
+               translateZ(0)
+               rotateY(0deg)
+               scale(1.05);
+    z-index: 2;
+  }
+
+  .card-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: calc(1 - var(--index) * 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover .card-content {
+    opacity: 1;
+  }
+
+  .card-image-wrapper {
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #f5f5f5;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .card:hover .card-image {
+    transform: scale(1.05);
+  }
+
+  .card-info {
+    padding: 24px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+    line-height: 1.3;
+  }
+
+  .card-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* Dark mode styles */
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background: #1a1a1a;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-info {
+      background: linear-gradient(
+        to bottom,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(26, 26, 26, 1) 100%
+      );
+    }
+
+    .card-title {
+      color: #ffffff;
+    }
+
+    .card-description {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  /* Lightbox styles */
+  .lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .lightbox.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .lightbox img {
+    max-width: 95%;
+    max-height: 95vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .lightbox.active img {
+    transform: scale(1);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  .lightbox-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1280px) {
+    .card {
+      width: 340px;
+      height: 460px;
+    }
+
+    .card-image-wrapper {
+      height: 300px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .card {
+      width: 320px;
+      height: 440px;
+    }
+
+    .card-image-wrapper {
+      height: 280px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stacked-cards-container {
+      min-height: 400px;
+    }
+
+    .card {
+      width: 300px;
+      height: 420px;
+    }
+
+    .card-image-wrapper {
+      height: 260px;
+    }
+
+    .card-info {
+      padding: 16px;
+    }
+  }
+</style>
+
+<script>
+const container = document.getElementById('stacked-cards');
+const cards = container?.querySelectorAll('.card') as NodeListOf<HTMLElement>;
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
+const lightboxClose = document.querySelector('.lightbox-close');
+
+if (container && cards && lightbox && lightboxImage && lightboxClose) {
+  let activeIndex = -1;
+  let isAnimating = false;
+
+  // 点击卡片打开大图
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('card-image')) {
+        const imageUrl = card.getAttribute('data-image');
+        if (imageUrl && !isAnimating) {
+          isAnimating = true;
+          lightboxImage.src = imageUrl;
+          lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          setTimeout(() => {
+            isAnimating = false;
+          }, 300);
+        }
+      }
+    });
+  });
+
+  // 关闭灯箱
+  const closeLightbox = () => {
+    if (!isAnimating) {
+      isAnimating = true;
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        isAnimating = false;
+      }, 300);
+    }
+  };
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+      closeLightbox();
+    }
+  });
+
+  // 鼠标悬停效果
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isAnimating) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const cardWidth = rect.width / cards.length;
+    const newIndex = Math.floor(x / cardWidth);
+    
+    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < cards.length) {
+      activeIndex = newIndex;
+      cards.forEach((card) => {
+        const index = Number(card.getAttribute('data-card-index'));
+        const offset = index - activeIndex;
+        const scale = activeIndex === index ? 1.05 : 1;
+        const zIndex = activeIndex === index ? cards.length : cards.length - Math.abs(offset);
+        
+        card.style.transform = `
+          translateX(calc(${offset * 80}px + ${index * 80}px - 50%))
+          translateZ(${Math.abs(offset) * -30}px)
+          rotateY(${offset * 5}deg)
+          scale(${scale})
+        `;
+        card.style.zIndex = String(zIndex);
+      });
+    }
+  };
+
+  // 重置卡片位置
+  const resetCards = () => {
+    if (isAnimating) return;
+    
+    activeIndex = -1;
+    cards.forEach((card) => {
+      const index = Number(card.getAttribute('data-card-index'));
+      card.style.transform = `
+        translateX(calc(${index * 80}px - 50%))
+        translateZ(${index * -60}px)
+        rotateY(${index * 5}deg)
+      `;
+      card.style.zIndex = String(cards.length - index);
+    });
+  };
+
+  container.addEventListener('mousemove', handleMouseMove);
+  container.addEventListener('mouseleave', resetCards);
+}
+</script> 

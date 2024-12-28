@@ -8,12 +8,25 @@ import Button from '~/components/ui/Button.astro';
 import Gallery from '~/components/widgets/Gallery.astro';
 import MoeProFeature from '~/components/widgets/MoeProFeature.astro';
 
-// 导入所有示例图片
-const sampleImages = await Astro.glob('../assets/images/samples/*.JPG');
-const galleryImages = sampleImages.map((image) => ({
-  src: image.default,
-  alt: 'MoeCard 创作作品'
-}));
+// 准备网络图片数据 - 优化内存使用
+const galleryImages = [
+  { src: 'https://i.postimg.cc/W1cvX7Wr/000000.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/zfJ11G1G/000001.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/g0NbcbYq/000002.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/26tpvdL1/000003.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/LX5KnQ5d/000004.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/brS7RG13/000005.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/QVLRYXbs/000006.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/SQXRPDrt/000007.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/Vs3vPnZs/000008.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/Fs3Rrzwy/000009.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/T3xPpGXZ/000011.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/VNGsGCb8/000012.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/QMxxJbCm/000013.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/FRYr2HjJ/000014.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/FRwrmXZC/000015.jpg', alt: 'MoeCard 创作作品' },
+  { src: 'https://i.postimg.cc/7h7xZttH/000016.jpg', alt: 'MoeCard 创作作品' }
+];
 
 const appStoreDownloadLink = '#';
 
@@ -104,7 +117,7 @@ const metadata = {
       },
       {
         title: '无水印导出',
-        description: '高清作品导出，分享更专业',
+        description: '高���作品导出，分享更专业',
         icon: '⬇️',
       },
       {

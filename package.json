@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=512' astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "npm run check:astro && npm run check:eslint && npm run check:prettier",

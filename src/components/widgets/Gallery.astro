@@ -1,11 +1,11 @@
 ---
-import { Image } from 'astro:assets';
+import Twemoji from '../common/Twemoji.astro';
 
 interface Props {
   title?: string;
   subtitle?: string;
   images: {
-    src: any;
+    src: string;
     alt: string;
   }[];
   classes?: {
@@ -23,13 +23,12 @@ const {
   classes = {},
 } = Astro.props;
 
-// 将图片分成两组，并限制每组最多显示6张图片
-const firstRow = images.filter((_, i) => i % 2 === 0).slice(0, 6);
-const secondRow = images.filter((_, i) => i % 2 === 1).slice(0, 6);
+// 分组图片
+const firstRow = images.filter((_, i) => i % 2 === 0).slice(0, 8);
+const secondRow = images.filter((_, i) => i % 2 === 1).slice(0, 8);
 
-// 生成缩略图尺寸
-const thumbnailWidth = 320;
-const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
+// 计算动画持续时间
+const animationDuration = Math.max(20, Math.min(firstRow.length * 5, 30));
 ---
 
 <section class:list={['relative', classes?.container]}>
@@ -48,22 +47,21 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
     <div class="space-y-8">
       <!-- 第一行 向左滚动 -->
       <div class="overflow-hidden">
-        <div class="scroll-row flex gap-4 animate-scroll-left">
+        <div class="scroll-row flex gap-4" style={`animation-duration: ${animationDuration}s`}>
           {[...firstRow, ...firstRow].map((image) => (
             <div 
               class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
-              data-src={image.src.src}
+              data-src={image.src}
             >
               <div class="aspect-[3/4]">
-                <Image
+                <img
                   src={image.src}
                   alt={image.alt}
-                  width={thumbnailWidth}
-                  height={thumbnailHeight}
+                  width={320}
+                  height={427}
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="eager"
                   decoding="async"
-                  quality={60}
                 />
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
@@ -74,22 +72,21 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
 
       <!-- 第二行 向右滚动 -->
       <div class="overflow-hidden">
-        <div class="scroll-row flex gap-4 animate-scroll-right">
+        <div class="scroll-row flex gap-4" style={`animation-duration: ${animationDuration}s`}>
           {[...secondRow, ...secondRow].map((image) => (
             <div 
               class="relative group w-[320px] flex-shrink-0 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer gallery-item"
-              data-src={image.src.src}
+              data-src={image.src}
             >
               <div class="aspect-[3/4]">
-                <Image
+                <img
                   src={image.src}
                   alt={image.alt}
-                  width={thumbnailWidth}
-                  height={thumbnailHeight}
+                  width={320}
+                  height={427}
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                   decoding="async"
-                  quality={60}
                 />
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
@@ -102,11 +99,17 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
 
   <!-- 全屏查看模态框 -->
   <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center">
-    <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" id="closeModal">&times;</button>
+    <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" id="closeModal">
+      <Twemoji emoji="❌" size="1.2em" />
+    </button>
     <div class="relative w-full h-full flex items-center justify-center">
       <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain opacity-0 transition-opacity duration-300" src="" alt="Full screen image" />
-      <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="prevImage">&lt;</button>
-      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="nextImage">&gt;</button>
+      <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white" id="prevImage">
+        <Twemoji emoji="⬅️" size="2em" />
+      </button>
+      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white" id="nextImage">
+        <Twemoji emoji="➡️" size="2em" />
+      </button>
       <div id="loadingIndicator" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
       </div>
@@ -115,170 +118,144 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
 </section>
 
 <style>
-  @keyframes scrollLeft {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(calc(-320px * 6 - 1rem * 6));
-    }
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
   }
+  100% {
+    transform: translateX(calc(-320px * 8 - 1rem * 8));
+  }
+}
 
-  @keyframes scrollRight {
-    0% {
-      transform: translateX(calc(-320px * 6 - 1rem * 6));
-    }
-    100% {
-      transform: translateX(0);
-    }
+@keyframes scrollRight {
+  0% {
+    transform: translateX(calc(-320px * 8 - 1rem * 8));
   }
+  100% {
+    transform: translateX(0);
+  }
+}
 
-  .animate-scroll-left {
-    animation: scrollLeft 30s linear infinite;
-    will-change: transform;
-  }
+.scroll-row {
+  animation: scrollLeft linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 
-  .animate-scroll-right {
-    animation: scrollRight 30s linear infinite;
-    will-change: transform;
-  }
+.scroll-row:nth-child(even) {
+  animation-name: scrollRight;
+}
 
-  .scroll-row:hover {
-    animation-play-state: paused;
-  }
-
-  .scroll-row {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
+.scroll-row:hover {
+  animation-play-state: paused;
+}
 </style>
 
 <script>
+interface GalleryItem extends HTMLElement {
+  querySelector(selector: string): HTMLImageElement | null;
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('imageModal') as HTMLDivElement;
+  const modalImg = document.getElementById('modalImage') as HTMLImageElement;
+  const loadingIndicator = document.getElementById('loadingIndicator') as HTMLDivElement;
+  const galleryItems = document.querySelectorAll<GalleryItem>('.gallery-item');
   let currentImageIndex = 0;
-  let allImages: string[] = [];
-  const preloadedImages: { [key: string]: HTMLImageElement } = {};
 
-  // 预加载图片函数
-  function preloadImage(src: string): Promise<HTMLImageElement> {
-    if (preloadedImages[src]) {
-      return Promise.resolve(preloadedImages[src]);
-    }
-
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        preloadedImages[src] = img;
-        resolve(img);
-      };
-      img.onerror = reject;
-      img.src = src;
-    });
+  if (!modal || !modalImg || !loadingIndicator) {
+    console.error('Required elements not found');
+    return;
   }
 
-  // 预加载相邻图片
-  function preloadAdjacentImages(currentIndex: number) {
-    const nextIndex = (currentIndex + 1) % allImages.length;
-    const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+  // 显示大图
+  async function showImage(index: number) {
+    const items = Array.from(galleryItems);
+    if (index < 0 || index >= items.length) return;
     
-    Promise.all([
-      preloadImage(allImages[nextIndex]),
-      preloadImage(allImages[prevIndex])
-    ]).catch(console.error);
-  }
+    currentImageIndex = index;
+    if (loadingIndicator) loadingIndicator.classList.remove('hidden');
+    if (modalImg) modalImg.classList.add('opacity-0');
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('imageModal') as HTMLDivElement;
-    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
-    const loadingIndicator = document.getElementById('loadingIndicator') as HTMLDivElement;
-    const closeBtn = document.getElementById('closeModal') as HTMLButtonElement;
-    const prevBtn = document.getElementById('prevImage') as HTMLButtonElement;
-    const nextBtn = document.getElementById('nextImage') as HTMLButtonElement;
-    const galleryItems = document.querySelectorAll('.gallery-item');
-
-    // 收集所有图片URL
-    allImages = Array.from(galleryItems)
-      .map(item => item.getAttribute('data-src'))
-      .filter((src): src is string => src !== null);
-
-    async function showImage(index: number) {
-      currentImageIndex = index;
-      if (modalImg && index >= 0 && index < allImages.length) {
-        loadingIndicator.classList.remove('hidden');
-        modalImg.classList.add('opacity-0');
-        
-        try {
-          const img = await preloadImage(allImages[index]);
-          modalImg.src = img.src;
+    try {
+      const src = items[index].getAttribute('data-src');
+      if (!src || !modalImg || !loadingIndicator) return;
+      
+      modalImg.src = src;
+      const imgElement = items[index].querySelector('img');
+      modalImg.alt = imgElement ? imgElement.alt : '';
+      modalImg.onload = () => {
+        if (modalImg && loadingIndicator) {
           modalImg.classList.remove('opacity-0');
-          preloadAdjacentImages(index);
-        } catch (error) {
-          console.error('Failed to load image:', error);
-        } finally {
           loadingIndicator.classList.add('hidden');
         }
-      }
+      };
+    } catch (error) {
+      console.error('Failed to load image:', error);
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
     }
+  }
 
-    function showNextImage() {
-      showImage((currentImageIndex + 1) % allImages.length);
+  // 初始化图片点击事件
+  galleryItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      showImage(index);
+    });
+  });
+
+  // 模态框控制
+  const closeBtn = document.getElementById('closeModal');
+  const prevImgBtn = document.getElementById('prevImage');
+  const nextImgBtn = document.getElementById('nextImage');
+
+  closeBtn?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
     }
+  });
 
-    function showPrevImage() {
-      showImage((currentImageIndex - 1 + allImages.length) % allImages.length);
-    }
+  prevImgBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const items = Array.from(galleryItems);
+    showImage((currentImageIndex - 1 + items.length) % items.length);
+  });
 
-    if (modal && modalImg && closeBtn && prevBtn && nextBtn) {
-      galleryItems.forEach((item, index) => {
-        item.addEventListener('click', () => {
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
-          document.body.style.overflow = 'hidden';
-          showImage(index);
-        });
-      });
+  nextImgBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const items = Array.from(galleryItems);
+    showImage((currentImageIndex + 1) % items.length);
+  });
 
-      closeBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-      });
-
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+  // 键盘控制
+  document.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('hidden')) {
+      const items = Array.from(galleryItems);
+      switch(e.key) {
+        case 'Escape':
           modal.classList.add('hidden');
           modal.classList.remove('flex');
           document.body.style.overflow = '';
-        }
-      });
-
-      prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showPrevImage();
-      });
-
-      nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showNextImage();
-      });
-
-      // 键盘控制
-      document.addEventListener('keydown', (e) => {
-        if (!modal.classList.contains('hidden')) {
-          switch(e.key) {
-            case 'Escape':
-              modal.classList.add('hidden');
-              modal.classList.remove('flex');
-              document.body.style.overflow = '';
-              break;
-            case 'ArrowLeft':
-              showPrevImage();
-              break;
-            case 'ArrowRight':
-              showNextImage();
-              break;
-          }
-        }
-      });
+          break;
+        case 'ArrowLeft':
+          showImage((currentImageIndex - 1 + items.length) % items.length);
+          break;
+        case 'ArrowRight':
+          showImage((currentImageIndex + 1) % items.length);
+          break;
+      }
     }
   });
 
@@ -287,9 +264,9 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
     (entries) => {
       entries.forEach(entry => {
         const row = entry.target as HTMLElement;
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && row.style) {
           row.style.animationPlayState = 'running';
-        } else {
+        } else if (row.style) {
           row.style.animationPlayState = 'paused';
         }
       });
@@ -299,13 +276,6 @@ const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
 
   document.querySelectorAll('.scroll-row').forEach(row => {
     observer.observe(row);
-    
-    row.addEventListener('mouseenter', () => {
-      (row as HTMLElement).style.animationPlayState = 'paused';
-    });
-    
-    row.addEventListener('mouseleave', () => {
-      (row as HTMLElement).style.animationPlayState = 'running';
-    });
   });
+});
 </script>

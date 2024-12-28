@@ -1,5 +1,5 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import type { ImageMetadata } from 'astro/types';
+import type { HTMLAttributes, ImageMetadata } from 'astro/types';
 
 export interface Post {
   /** A unique ID number that identifies a post. */
@@ -130,7 +130,6 @@ export interface Stat {
   amount?: number | string;
   title?: string;
   icon?: string;
-  emoji?: string;
 }
 
 export interface Item {
@@ -182,13 +181,12 @@ export interface Disclaimer {
 }
 
 // COMPONENTS
-export interface CallToAction {
-  text: string;
-  href: string;
-  variant?: 'primary' | 'secondary' | 'link';
-  emoji?: string;
-  target?: string;
+export interface CallToAction extends Omit<HTMLAttributes<'a'>, 'slot'> {
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link';
+  text?: string;
   icon?: string;
+  classes?: Record<string, string>;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export interface ItemGrid {
@@ -215,13 +213,7 @@ export interface Form {
 }
 
 // WIDGETS
-export interface Hero {
-  title?: string;
-  subtitle?: string;
-  tagline?: {
-    text: string;
-    emoji?: string;
-  };
+export interface Hero extends Omit<Headline, 'classes'>, Omit<Widget, 'isDark' | 'classes'> {
   content?: string;
   actions?: string | CallToAction[];
   image?: string | unknown;
@@ -270,7 +262,12 @@ export interface Faqs extends Omit<Headline, 'classes'>, Widget {
 }
 
 export interface Steps extends Omit<Headline, 'classes'>, Widget {
-  items: Array<Step>;
+  items: Array<{
+    title: string;
+    description?: string;
+    icon?: string;
+    classes?: Record<string, string>;
+  }>;
   callToAction?: string | CallToAction;
   image?: string | Image;
   isReversed?: boolean;
@@ -287,19 +284,3 @@ export interface Content extends Omit<Headline, 'classes'>, Widget {
 }
 
 export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {}
-
-export interface Step {
-  title: string;
-  description?: string;
-  icon?: string;
-  emoji?: string;
-  classes?: Record<string, string>;
-}
-
-export interface Feature {
-  title: string;
-  description?: string;
-  icon?: string;
-  emoji?: string;
-  classes?: Record<string, string>;
-}

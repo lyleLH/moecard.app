@@ -1,37 +1,40 @@
 ---
 import { Icon } from 'astro-icon/components';
-import Twemoji from '../common/Twemoji.astro';
-
-interface Props {
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  class?: string;
-  text?: string;
-  icon?: string;
-  emoji?: string;
-  [x: string]: any;
-}
+import { twMerge } from 'tailwind-merge';
+import type { CallToAction as Props } from '~/types';
 
 const {
-  variant = 'primary',
-  class: className = '',
-  text = '',
+  variant = 'secondary',
+  target,
+  text = Astro.slots.render('default'),
   icon = '',
-  emoji = '',
+  class: className = '',
+  type,
   ...rest
 } = Astro.props;
+
+const variants = {
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  tertiary: 'btn btn-tertiary',
+  link: 'cursor-pointer hover:text-primary',
+};
 ---
 
-<button
-  class:list={[
-    'btn',
-    className,
-    variant === 'primary' && 'btn-primary',
-    variant === 'secondary' && 'btn-secondary', 
-    variant === 'tertiary' && 'btn-tertiary',
-  ]}
-  {...rest}
->
-  {emoji && <Twemoji emoji={emoji} size="md" class="mr-2" />}
-  {icon && <Icon name={icon} class="w-5 h-5 mr-1 -ml-1.5" />}
-  <span>{text || <slot />}</span>
-</button>
+{
+  type === 'button' || type === 'submit' || type === 'reset' ? (
+    <button type={type} class={twMerge(variants[variant] || '', className)} {...rest}>
+      <Fragment set:html={text} />
+      {icon && <Icon name={icon} class="w-5 h-5 ml-1 -mr-1.5 rtl:mr-1 rtl:-ml-1.5 inline-block" />}
+    </button>
+  ) : (
+    <a
+      class={twMerge(variants[variant] || '', className)}
+      {...(target ? { target: target, rel: 'noopener noreferrer' } : {})}
+      {...rest}
+    >
+      <Fragment set:html={text} />
+      {icon && <Icon name={icon} class="w-5 h-5 ml-1 -mr-1.5 rtl:mr-1 rtl:-ml-1.5 inline-block" />}
+    </a>
+  )
+}

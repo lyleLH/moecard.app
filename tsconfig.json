@@ -5,8 +5,7 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"],
-      "astrowind:config": ["src/config.ts"]
+      "~/*": ["src/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],

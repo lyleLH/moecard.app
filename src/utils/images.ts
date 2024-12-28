@@ -5,12 +5,10 @@ import type { OpenGraph } from '@astrolib/seo';
 const load = async function () {
   let images: Record<string, () => Promise<unknown>> | undefined = undefined;
   try {
-    images = import.meta.glob(
-      '/src/assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}',
-      { eager: true }
-    );
+    images = import.meta.glob('~/assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg,JPEG,JPG,PNG,TIFF,WEBP,GIF,SVG}');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.warn('Error loading images:', error);
+    // continue regardless of error
   }
   return images;
 };
@@ -27,21 +25,26 @@ export const fetchLocalImages = async () => {
 export const findImage = async (
   imagePath?: string | ImageMetadata | null
 ): Promise<string | ImageMetadata | undefined | null> => {
+  // Not string
   if (typeof imagePath !== 'string') {
     return imagePath;
   }
 
+  // Absolute paths
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('/')) {
     return imagePath;
   }
 
-  const normalizedPath = imagePath
-    .replace('~/', '/src/')
-    .replace('../assets/', '/src/assets/');
+  // Relative paths or not "~/assets/"
+  if (!imagePath.startsWith('~/assets/images')) {
+    return imagePath;
+  }
 
   const images = await fetchLocalImages();
-  return images && typeof images[normalizedPath] === 'function'
-    ? ((await images[normalizedPath]()) as { default: ImageMetadata })['default']
+  const key = imagePath.replace('~/', '/src/');
+
+  return images && typeof images[key] === 'function'
+    ? ((await images[key]()) as { default: ImageMetadata })['default']
     : null;
 };
 
@@ -106,33 +109,3 @@ export const adaptOpenGraphImages = async (
 
   return { ...openGraph, ...(adaptedImages ? { images: adaptedImages } : {}) };
 };
-
-export async function getSampleImages() {
-  try {
-    const files = import.meta.glob<{ default: ImageMetadata }>(
-      '/src/assets/images/samples/*.{png,jpg,jpeg,webp}',
-      {
-        eager: true,
-      }
-    );
-
-    if (Object.keys(files).length === 0) {
-      console.warn('No sample images found in /src/assets/images/samples/ directory');
-      return [];
-    }
-
-    return Object.entries(files).map(([path]) => {
-      const fileName = path.split('/').pop() || '';
-      const title = fileName.split('.')[0];
-      
-      return {
-        title,
-        image: path,
-        tags: ['用户作品']
-      };
-    });
-  } catch (error) {
-    console.error('Error loading sample images:', error);
-    return [];
-  }
-}

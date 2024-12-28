@@ -1,51 +1,36 @@
 ---
-import Twemoji from '../common/Twemoji.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import ItemGrid from '~/components/ui/ItemGrid.astro';
+import Headline from '~/components/ui/Headline.astro';
+import type { Features as Props } from '~/types';
 
-interface Props {
-  title?: string;
-  subtitle?: string;
-  tagline?: {
-    text: string;
-    emoji?: string;
-  };
-  items: Array<{
-    title: string;
-    description: string;
-    icon?: string;
-    emoji?: string;
-    color?: string;
-  }>;
-}
+const {
+  title = await Astro.slots.render('title'),
+  subtitle = await Astro.slots.render('subtitle'),
+  tagline = await Astro.slots.render('tagline'),
+  items = [],
+  columns = 2,
 
-const { items, title, subtitle, tagline } = Astro.props;
+  defaultIcon,
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
 ---
 
-<section class="relative">
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true"></div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="text-center max-w-3xl mx-auto">
-      {tagline && (
-        <div class="flex items-center justify-center mb-4">
-          {tagline.emoji && <Twemoji emoji={tagline.emoji} size="lg" class="mr-2" />}
-          <p class="text-base text-primary font-semibold tracking-wide uppercase">
-            {tagline.text}
-          </p>
-        </div>
-      )}
-      {title && <h2 class="text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading">{title}</h2>}
-      {subtitle && <p class="text-xl text-muted mb-8 dark:text-slate-400">{subtitle}</p>}
-    </div>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start my-12 dark:text-white">
-      {items.map(({ title, description, emoji, icon, color }) => (
-        <div class={`relative flex flex-col p-6 bg-white dark:bg-slate-900 rounded shadow-lg hover:shadow-md transition border border-transparent dark:border-slate-800 ${color || ''}`}>
-          <div class="flex items-center mb-4">
-            {emoji && <Twemoji emoji={emoji} size="xl" class="mr-2" />}
-            {icon && <span class="text-4xl mr-2">{icon}</span>}
-            <h3 class="text-xl font-bold">{title}</h3>
-          </div>
-          <p class="text-muted dark:text-gray-400">{description}</p>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-5xl ${classes?.container ?? ''}`} bg={bg}>
+  <Headline title={title} subtitle={subtitle} tagline={tagline} classes={classes?.headline as Record<string, string>} />
+  <ItemGrid
+    items={items}
+    columns={columns}
+    defaultIcon={defaultIcon}
+    classes={{
+      container: '',
+      title: 'md:text-[1.3rem]',
+      icon: 'text-white bg-primary rounded-full w-10 h-10 p-2 md:w-12 md:h-12 md:p-3 mr-4 rtl:ml-4 rtl:mr-0',
+      ...((classes?.items as Record<string, never>) ?? {}),
+    }}
+  />
+</WidgetWrapper>

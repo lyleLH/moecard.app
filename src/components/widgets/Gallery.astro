@@ -5,7 +5,7 @@ interface Props {
   title?: string;
   subtitle?: string;
   images: {
-    src: string;
+    src: any;
     alt: string;
   }[];
   classes?: {
@@ -23,9 +23,13 @@ const {
   classes = {},
 } = Astro.props;
 
-// 将图片分成两组
-const firstRow = images.filter((_, i) => i % 2 === 0);
-const secondRow = images.filter((_, i) => i % 2 === 1);
+// 将图片分成两组，并限制每组最多显示6张图片
+const firstRow = images.filter((_, i) => i % 2 === 0).slice(0, 6);
+const secondRow = images.filter((_, i) => i % 2 === 1).slice(0, 6);
+
+// 生成缩略图尺寸
+const thumbnailWidth = 320;
+const thumbnailHeight = Math.floor(thumbnailWidth * 4/3);
 ---
 
 <section class:list={['relative', classes?.container]}>
@@ -54,11 +58,12 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
                 <Image
                   src={image.src}
                   alt={image.alt}
-                  width={800}
-                  height={1067}
+                  width={thumbnailWidth}
+                  height={thumbnailHeight}
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                  quality={90}
+                  loading="eager"
+                  decoding="async"
+                  quality={60}
                 />
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
@@ -79,11 +84,12 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
                 <Image
                   src={image.src}
                   alt={image.alt}
-                  width={800}
-                  height={1067}
+                  width={thumbnailWidth}
+                  height={thumbnailHeight}
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="lazy"
-                  quality={90}
+                  decoding="async"
+                  quality={60}
                 />
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
@@ -98,7 +104,7 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
   <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center">
     <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" id="closeModal">&times;</button>
     <div class="relative w-full h-full flex items-center justify-center">
-      <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain" src="" alt="Full screen image" />
+      <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain opacity-0 transition-opacity duration-300" src="" alt="Full screen image" />
       <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="prevImage">&lt;</button>
       <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gray-300" id="nextImage">&gt;</button>
       <div id="loadingIndicator" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -114,13 +120,13 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(calc(-320px * 6 - 1rem * 6));
     }
   }
 
   @keyframes scrollRight {
     0% {
-      transform: translateX(-50%);
+      transform: translateX(calc(-320px * 6 - 1rem * 6));
     }
     100% {
       transform: translateX(0);
@@ -128,29 +134,57 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
   }
 
   .animate-scroll-left {
-    animation: scrollLeft 60s linear infinite;
+    animation: scrollLeft 30s linear infinite;
+    will-change: transform;
   }
 
   .animate-scroll-right {
-    animation: scrollRight 60s linear infinite;
+    animation: scrollRight 30s linear infinite;
+    will-change: transform;
   }
 
   .scroll-row:hover {
     animation-play-state: paused;
   }
 
-  #modalImage {
-    transition: opacity 0.3s ease;
-  }
-  
-  .opacity-0 {
-    opacity: 0;
+  .scroll-row {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 </style>
 
 <script>
   let currentImageIndex = 0;
   let allImages: string[] = [];
+  const preloadedImages: { [key: string]: HTMLImageElement } = {};
+
+  // 预加载图片函数
+  function preloadImage(src: string): Promise<HTMLImageElement> {
+    if (preloadedImages[src]) {
+      return Promise.resolve(preloadedImages[src]);
+    }
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        preloadedImages[src] = img;
+        resolve(img);
+      };
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  // 预加载相邻图片
+  function preloadAdjacentImages(currentIndex: number) {
+    const nextIndex = (currentIndex + 1) % allImages.length;
+    const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+    
+    Promise.all([
+      preloadImage(allImages[nextIndex]),
+      preloadImage(allImages[prevIndex])
+    ]).catch(console.error);
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('imageModal') as HTMLDivElement;
@@ -166,19 +200,22 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
       .map(item => item.getAttribute('data-src'))
       .filter((src): src is string => src !== null);
 
-    function showImage(index: number) {
+    async function showImage(index: number) {
       currentImageIndex = index;
       if (modalImg && index >= 0 && index < allImages.length) {
         loadingIndicator.classList.remove('hidden');
         modalImg.classList.add('opacity-0');
         
-        const newImage = new Image();
-        newImage.onload = () => {
-          modalImg.src = newImage.src;
+        try {
+          const img = await preloadImage(allImages[index]);
+          modalImg.src = img.src;
           modalImg.classList.remove('opacity-0');
+          preloadAdjacentImages(index);
+        } catch (error) {
+          console.error('Failed to load image:', error);
+        } finally {
           loadingIndicator.classList.add('hidden');
-        };
-        newImage.src = allImages[index];
+        }
       }
     }
 
@@ -245,14 +282,30 @@ const secondRow = images.filter((_, i) => i % 2 === 1);
     }
   });
 
-  // 暂停和恢复动画
-  const rows = document.querySelectorAll('.scroll-row');
-  rows.forEach(row => {
+  // 使用 Intersection Observer 优化滚动性能
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        const row = entry.target as HTMLElement;
+        if (entry.isIntersecting) {
+          row.style.animationPlayState = 'running';
+        } else {
+          row.style.animationPlayState = 'paused';
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.scroll-row').forEach(row => {
+    observer.observe(row);
+    
     row.addEventListener('mouseenter', () => {
       (row as HTMLElement).style.animationPlayState = 'paused';
     });
+    
     row.addEventListener('mouseleave', () => {
       (row as HTMLElement).style.animationPlayState = 'running';
     });
   });
-</script> 
+</script>

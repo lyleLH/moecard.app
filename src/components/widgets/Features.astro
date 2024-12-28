@@ -1,14 +1,7 @@
 ---
 import Twemoji from '../common/Twemoji.astro';
 
-interface Item {
-  title: string;
-  description: string;
-  emoji?: string;
-  icon?: string;
-}
-
-export interface Props {
+interface Props {
   title?: string;
   subtitle?: string;
   tagline?: {
@@ -17,12 +10,11 @@ export interface Props {
   };
   items: Array<{
     title: string;
-    description?: string;
+    description: string;
     icon?: string;
     emoji?: string;
-    classes?: Record<string, string>;
+    color?: string;
   }>;
-  // ...
 }
 
 const { items, title, subtitle, tagline } = Astro.props;
@@ -44,11 +36,11 @@ const { items, title, subtitle, tagline } = Astro.props;
       {subtitle && <p class="text-xl text-muted mb-8 dark:text-slate-400">{subtitle}</p>}
     </div>
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start my-12 dark:text-white">
-      {items.map(({ title, description, emoji, icon }) => (
-        <div class="relative flex flex-col p-6 bg-white dark:bg-slate-900 rounded shadow-lg hover:shadow-md transition border border-transparent dark:border-slate-800">
+      {items.map(({ title, description, emoji, icon, color }) => (
+        <div class={`relative flex flex-col p-6 bg-white dark:bg-slate-900 rounded shadow-lg hover:shadow-md transition border border-transparent dark:border-slate-800 ${color || ''}`}>
           <div class="flex items-center mb-4">
             {emoji && <Twemoji emoji={emoji} size="xl" class="mr-2" />}
-            {icon && <Icon name={icon} class="w-10 h-10" />}
+            {icon && <span class="text-4xl mr-2">{icon}</span>}
             <h3 class="text-xl font-bold">{title}</h3>
           </div>
           <p class="text-muted dark:text-gray-400">{description}</p>

@@ -1,5 +1,5 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import type { HTMLAttributes, ImageMetadata } from 'astro/types';
+import type { ImageMetadata } from 'astro/types';
 
 export interface Post {
   /** A unique ID number that identifies a post. */
@@ -130,6 +130,7 @@ export interface Stat {
   amount?: number | string;
   title?: string;
   icon?: string;
+  emoji?: string;
 }
 
 export interface Item {
@@ -184,8 +185,10 @@ export interface Disclaimer {
 export interface CallToAction {
   text: string;
   href: string;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'link';
   emoji?: string;
+  target?: string;
+  icon?: string;
 }
 
 export interface ItemGrid {

@@ -7,6 +7,7 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
 import Gallery from '~/components/widgets/Gallery.astro';
 import MoeProFeature from '~/components/widgets/MoeProFeature.astro';
+import Twemoji from '~/components/common/Twemoji.astro';
 
 // 导入所有示例图片
 const sampleImages = await Astro.glob('../assets/images/samples/*.JPG');
@@ -28,9 +29,9 @@ const metadata = {
     <Header
       position="center"
       links={[
-        { text: '功能介绍', href: '#features' },
-        { text: '创作展示', href: '#showcase' },
-        { text: '会员特权', href: '#pro' },
+        { text: '功能介绍', href: '#features', icon: '✨' },
+        { text: '创作展示', href: '#showcase', icon: '🎨' },
+        { text: '会员特权', href: '#pro', icon: '👑' },
       ]}
       actions={[
         {
@@ -89,41 +90,42 @@ const metadata = {
     items={[
       {
         title: '丰富表情',
-        description: '内��完整的 Twemoji 表情包，让设计更有趣',
-        icon: 'tabler:mood-smile',
+        description: '内置完整的 Twemoji 表情包，让设计更有趣',
+        icon: '😊',
       },
       {
         title: '无限草稿',
         description: '随时保存创作进度，灵感不中断',
-        icon: 'tabler:edit',
+        icon: '📝',
       },
       {
         title: '自定义素材',
         description: '导入你喜欢的图片，让创作更自由',
-        icon: 'tabler:photo',
+        icon: '🖼️',
       },
       {
         title: '无水印导出',
         description: '高清作品导出，分享更专业',
-        icon: 'tabler:download',
+        icon: '⬇️',
       },
       {
         title: '字体管理',
         description: '支持自定义字体，让文字更有个性',
-        icon: 'tabler:typography',
+        icon: '🔤',
       },
       {
         title: '一键分享',
         description: '快速分享到社交平台，传播更轻松',
-        icon: 'tabler:share',
+        icon: '🔗',
       },
     ]}
     classes={{
-      container: 'max-w-6xl',
-      panel: 'bg-white dark:bg-slate-900 shadow-lg rounded-lg p-6',
-      title: 'text-3xl font-bold text-gray-900 dark:text-white',
+      container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12',
+      panel: 'bg-white dark:bg-slate-900 shadow-lg rounded-lg p-6 h-full',
+      title: 'text-3xl font-bold text-center text-gray-900 dark:text-white mb-8',
+      subtitle: 'text-xl text-center text-gray-600 dark:text-gray-400 mb-12',
       description: 'text-gray-600 dark:text-gray-400',
-      icon: 'text-green-500 dark:text-green-400'
+      icon: 'text-green-500 dark:text-green-400 w-12 h-12'
     }}
   />
 
@@ -143,16 +145,17 @@ const metadata = {
   </div>
 
   <!-- Pro Features -->
-  <MoeProFeature
-    id="pro"
-    classes={{
-      container: 'max-w-6xl py-16',
-      headline: {
-        title: 'text-3xl font-bold text-center',
-        subtitle: 'text-xl text-gray-600 dark:text-gray-400 text-center'
-      }
-    }}
-  />
+  <div id="pro">
+    <MoeProFeature
+      classes={{
+        container: 'max-w-7xl mx-auto',
+        headline: {
+          title: 'text-4xl font-bold text-center mb-4',
+          subtitle: 'text-xl text-gray-600 dark:text-gray-400 text-center mb-12'
+        }
+      }}
+    />
+  </div>
 
   <!-- Download CTA -->
   <CallToAction
@@ -160,7 +163,7 @@ const metadata = {
     title="开始你的创作之旅"
     subtitle="下载 MoeCard，让创作充满乐趣"
     classes={{
-      container: 'max-w-6xl py-20',
+      container: 'max-w-7xl mx-auto py-20',
       title: 'text-4xl font-bold',
       subtitle: 'text-xl'
     }}

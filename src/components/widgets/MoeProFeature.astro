@@ -1,69 +1,94 @@
 ---
-import Headline from '~/components/ui/Headline.astro';
-import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
-import { Icon } from 'astro-icon/components';
+import Twemoji from '../common/Twemoji.astro';
 
-const {
-  title = '会员特权',
-  subtitle = '解锁更多精彩功能',
-  tagline = '尊享特权',
-  isDark = false,
-  classes = {},
-  bg = await Astro.slots.render('bg'),
-} = Astro.props;
+interface Props {
+  classes?: {
+    container?: string;
+    headline?: {
+      title?: string;
+      subtitle?: string;
+    };
+  };
+}
+
+const { classes = {} } = Astro.props;
 
 const features = [
   {
-    title: '无限卡片制作',
-    description: '解锁无限制的卡片制作功能，尽情发挥创意',
-    icon: 'tabler:palette',
-    color: 'text-blue-600',
+    icon: '⚡️',
+    title: '无限导出',
+    description: '无限次数导出高清作品，让创作不受限制'
   },
   {
+    icon: '🎨',
     title: '专属模板',
-    description: '独享精心设计的高级模板库，让你的卡片与众不同',
-    icon: 'tabler:layout-grid',
-    color: 'text-green-600',
+    description: '独家精选模板，让你的作品与众不同'
   },
   {
-    title: '高级定制',
-    description: '解锁更多自定义选项，打造完全个性化的卡片',
-    icon: 'tabler:brush',
-    color: 'text-purple-600',
+    icon: '🌈',
+    title: '高级滤镜',
+    description: '专业级滤镜效果，让作品更出彩'
   },
   {
-    title: '优先支持',
-    description: '获得专属客服支持，问题优先解决',
-    icon: 'tabler:heart-handshake',
-    color: 'text-orange-600',
+    icon: '🎯',
+    title: '优先体验',
+    description: '抢先体验新功能，享受最新创作体验'
+  },
+  {
+    icon: '💫',
+    title: '云端备份',
+    description: '自动同步到云端，作品永不丢失'
+  },
+  {
+    icon: '🎁',
+    title: '会员福利',
+    description: '定期获得专属福利，创作更有动力'
   }
 ];
 ---
 
-<WidgetWrapper
-  isDark={isDark}
-  bg={bg}
->
-  <Headline
-    title={title}
-    subtitle={subtitle}
-    tagline={tagline}
-    classes={classes?.headline as Record<string, string>}
-  />
+<section class:list={["relative py-16 overflow-hidden", classes.container]}>
+  <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class:list={["text-4xl font-bold text-gray-900 dark:text-white", classes.headline?.title]}>
+        <Twemoji emoji="👑" size="1.2em" class="inline-block mr-2" />
+        MoeCard Pro
+      </h2>
+      <p class:list={["text-xl text-gray-600 dark:text-gray-400", classes.headline?.subtitle]}>
+        解锁更多高级功能，让创作更专业
+      </p>
+    </div>
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6 py-8">
-    {
-      features.map(({ title, description, icon, color }) => (
-        <div class="relative flex flex-col p-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg hover:shadow-xl transition duration-200 border border-transparent dark:border-slate-800">
-          <div class={`mb-4 ${color}`}>
-            <Icon name={icon} class="w-12 h-12" />
-          </div>
-          <div class="flex-grow">
-            <h3 class="text-xl font-bold mb-2">{title}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">{description}</p>
+    <div class="mt-16 grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-12 lg:grid-cols-3">
+      {features.map(feature => (
+        <div class="relative group">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg transition duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
+            <div class="flex items-center mb-6">
+              <div class="flex-shrink-0">
+                <Twemoji emoji={feature.icon} size="2.5em" class="mr-4" />
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                {feature.title}
+              </h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+              {feature.description}
+            </p>
           </div>
         </div>
-      ))
-    }
+      ))}
+    </div>
+
+    <div class="mt-16 text-center">
+      <a 
+        href="#download" 
+        class="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-green-500 to-green-400 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+      >
+        <Twemoji emoji="✨" size="1.2em" class="mr-2" />
+        升级 Pro
+      </a>
+    </div>
   </div>
-</WidgetWrapper> 
+</section> 

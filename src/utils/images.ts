@@ -1,6 +1,7 @@
 import { isUnpicCompatible, unpicOptimizer, astroAsseetsOptimizer } from './images-optimization';
 import type { ImageMetadata } from 'astro';
 import type { OpenGraph } from '@astrolib/seo';
+import { getCollection } from 'astro:content';
 
 const load = async function () {
   let images: Record<string, () => Promise<unknown>> | undefined = undefined;
@@ -109,3 +110,25 @@ export const adaptOpenGraphImages = async (
 
   return { ...openGraph, ...(adaptedImages ? { images: adaptedImages } : {}) };
 };
+
+export async function getSampleImages() {
+  try {
+    const files = await import.meta.glob('~/assets/images/samples/*.{png,jpg,jpeg,webp}', {
+      eager: true,
+    });
+
+    if (Object.keys(files).length === 0) {
+      console.warn('No sample images found in samples directory');
+      return [];
+    }
+
+    return Object.entries(files).map(([path, file]) => ({
+      title: path.split('/').pop()?.split('.')[0] || '',
+      image: path,
+      tags: ['用户作品']
+    }));
+  } catch (error) {
+    console.error('Error loading sample images:', error);
+    return [];
+  }
+}

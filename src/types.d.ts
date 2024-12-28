@@ -181,12 +181,11 @@ export interface Disclaimer {
 }
 
 // COMPONENTS
-export interface CallToAction extends Omit<HTMLAttributes<'a'>, 'slot'> {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link';
-  text?: string;
-  icon?: string;
-  classes?: Record<string, string>;
-  type?: 'button' | 'submit' | 'reset';
+export interface CallToAction {
+  text: string;
+  href: string;
+  variant?: 'primary' | 'secondary';
+  emoji?: string;
 }
 
 export interface ItemGrid {
@@ -213,7 +212,13 @@ export interface Form {
 }
 
 // WIDGETS
-export interface Hero extends Omit<Headline, 'classes'>, Omit<Widget, 'isDark' | 'classes'> {
+export interface Hero {
+  title?: string;
+  subtitle?: string;
+  tagline?: {
+    text: string;
+    emoji?: string;
+  };
   content?: string;
   actions?: string | CallToAction[];
   image?: string | unknown;
@@ -262,12 +267,7 @@ export interface Faqs extends Omit<Headline, 'classes'>, Widget {
 }
 
 export interface Steps extends Omit<Headline, 'classes'>, Widget {
-  items: Array<{
-    title: string;
-    description?: string;
-    icon?: string;
-    classes?: Record<string, string>;
-  }>;
+  items: Array<Step>;
   callToAction?: string | CallToAction;
   image?: string | Image;
   isReversed?: boolean;
@@ -284,3 +284,19 @@ export interface Content extends Omit<Headline, 'classes'>, Widget {
 }
 
 export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {}
+
+export interface Step {
+  title: string;
+  description?: string;
+  icon?: string;
+  emoji?: string;
+  classes?: Record<string, string>;
+}
+
+export interface Feature {
+  title: string;
+  description?: string;
+  icon?: string;
+  emoji?: string;
+  classes?: Record<string, string>;
+}

@@ -1,6 +1,7 @@
 ---
 import Image from '~/components/common/Image.astro';
 import Button from '~/components/ui/Button.astro';
+import Twemoji from '../common/Twemoji.astro';
 
 import type { Hero as Props } from '~/types';
 
@@ -30,10 +31,12 @@ const {
       <div class="text-center pb-10 md:pb-16 max-w-5xl mx-auto">
         {
           tagline && (
-            <p
-              class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-              set:html={tagline}
-            />
+            <div class="flex items-center justify-center mb-4">
+              {tagline.emoji && <Twemoji emoji={tagline.emoji} size="lg" class="mr-2" />}
+              <p class="text-base text-primary font-semibold tracking-wide uppercase">
+                {tagline.text}
+              </p>
+            </div>
           )
         }
         {

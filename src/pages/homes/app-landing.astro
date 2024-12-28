@@ -1,0 +1,184 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Features from '~/components/widgets/Features.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import Twemoji from '~/components/common/Twemoji.astro';
+
+const metadata = {
+  title: 'MoeCard - 轻松制作精美卡片',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- Hero Widget -->
+  <Hero
+    tagline={{
+      text: "卡片创作从未如此简单",
+      emoji: "✨"
+    }}
+    actions={[
+      {
+        variant: 'primary',
+        text: '立即下载',
+        href: '#download',
+        emoji: '📱'
+      },
+      {
+        text: '了解更多',
+        href: '#features',
+        emoji: '🎨'
+      },
+    ]}
+    image={{
+      src: '~/assets/images/hero-moecard.png',
+      alt: 'MoeCard App screenshot',
+    }}
+  >
+    <Fragment slot="title">
+      Moe<span class="text-primary">Card</span> <Twemoji emoji="✨" size="xl" />
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      <span class="hidden sm:inline">
+        简单而强大的卡片创作工具！丰富的字体选择，流畅的手势操作，
+        让创作精美卡片变得轻而易举。
+      </span>
+    </Fragment>
+  </Hero>
+
+  <!-- Features Widget -->
+  <Features
+    id="features"
+    tagline={{
+      text: "特色功能",
+      emoji: "🌟"
+    }}
+    title="简单而强大的创作体验"
+    subtitle="精心设计的功能，让卡片创作变得轻松自然"
+    items={[
+      {
+        title: '丰富字体',
+        description: '支持多种精美字体，让文字更有表现力',
+        emoji: '🎨'
+      },
+      {
+        title: '手势操作',
+        description: '流畅自然的手势控制，让编辑更轻松',
+        emoji: '🔄'
+      },
+      {
+        title: 'Twemoji',
+        description: '内置表情选择器，轻松添加表情装饰',
+        emoji: '😊'
+      },
+      {
+        title: '完全离线',
+        description: '无需网络连接，保护您的隐私',
+        emoji: '🔒'
+      },
+      {
+        title: '本地存储',
+        description: '所有内容安全存储在本地设备',
+        emoji: '📱'
+      },
+      {
+        title: '简约设计',
+        description: '清爽的界面设计，专注于创作体验',
+        emoji: '✨'
+      },
+    ]}
+  />
+
+  <!-- Stats Widget -->
+  <Stats
+    stats={[
+      { title: '字体选项', amount: '100+', emoji: '🎨' },
+      { title: '表情数量', amount: '3000+', emoji: '😊' },
+      { title: '用户评分', amount: '4.9', emoji: '⭐' },
+      { title: '手势支持', amount: '10+', emoji: '👆' },
+    ]}
+  />
+
+  <!-- Steps Widget -->
+  <Steps
+    title="三步开启创作之旅"
+    items={[
+      {
+        title: '第一步: <span class="font-medium">下载安装</span>',
+        description:
+          '从应用商店下载 MoeCard，简单安装即可开始使用。',
+        emoji: '📱'
+      },
+      {
+        title: '第二步: <span class="font-medium">选择模板</span>',
+        description:
+          '挑选心仪的卡片模板，或从空白开始创作。',
+        emoji: '✨'
+      },
+      {
+        title: '第三步: <span class="font-medium">开始创作</span>',
+        description:
+          '使用直观的手势操作，创作属于您的精美卡片。',
+        emoji: '🎨'
+      },
+    ]}
+  />
+
+  <!-- FAQs Widget -->
+  <FAQs
+    title="常见问题"
+    subtitle="有任何疑问？我们为您准备了详细的解答"
+    tagline={{
+      text: "解答",
+      emoji: "💡"
+    }}
+    classes={{ container: 'max-w-6xl' }}
+    items={[
+      {
+        title: '需要联网使用吗？',
+        description:
+          '不需要。MoeCard 完全离线工作，所有功能和内容都存储在本地设备中。',
+      },
+      {
+        title: '支持哪些手势操作？',
+        description:
+          'MoeCard 支持缩放、旋转、拖拽等多种直观的手势操作，让创作过程更加自然流畅。',
+      },
+      {
+        title: '如何使用表情？',
+        description:
+          '内置 Twemoji 选择器，支持批量添加和快速搜索，让您轻松找到需要的表情。',
+      },
+      {
+        title: '支持哪些字体？',
+        description:
+          'MoeCard 内置了100多种精美字体，从经典到现代，满足各种创作需求。',
+      },
+    ]}
+  />
+
+  <!-- CallToAction Widget -->
+  <CallToAction
+    actions={[
+      {
+        variant: 'primary',
+        text: '立即下载',
+        href: '#',
+        emoji: '📱'
+      },
+    ]}
+  >
+    <Fragment slot="title">
+      准备好开始创作了吗？
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      下载 MoeCard，享受流畅的卡片创作体验。支持 iOS 和 Android 设备。
+    </Fragment>
+  </CallToAction>
+
+</Layout> 

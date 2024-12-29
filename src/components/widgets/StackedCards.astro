@@ -15,31 +15,35 @@ const { cards, class: className = '' } = Astro.props;
 
 <div class:list={['stacked-cards-container', className]} id="stacked-cards">
   <div class="cards-wrapper">
-    {
-      cards.map((card, index) => (
-        <div
-          class="card"
-          style={`--index: ${index}; --total: ${cards.length};`}
-          data-card-index={index}
-          data-image={card.image}
-        >
-          <div class="card-content">
-            <div class="card-image-wrapper">
-              <img
-                src={card.image}
-                alt={card.title}
-                class="card-image"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
+    <div class="cards-scroll-container">
+      <div class="cards-inner">
+        {
+          cards.map((card, index) => (
+            <div
+              class="card"
+              style={`--index: ${index}; --total: ${cards.length};`}
+              data-card-index={index}
+              data-image={card.image}
+            >
+              <div class="card-content">
+                <div class="card-image-wrapper">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    class="card-image"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </div>
+                <div class="card-info">
+                  <h3 class="card-title">{card.title}</h3>
+                  <p class="card-description">{card.description}</p>
+                </div>
+              </div>
             </div>
-            <div class="card-info">
-              <h3 class="card-title">{card.title}</h3>
-              <p class="card-description">{card.description}</p>
-            </div>
-          </div>
-        </div>
-      ))
-    }
+          ))
+        }
+      </div>
+    </div>
   </div>
 </div>
 
@@ -59,7 +63,6 @@ const { cards, class: className = '' } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
   }
 
   .cards-wrapper {
@@ -70,8 +73,6 @@ const { cards, class: className = '' } = Astro.props;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    overflow: visible;
   }
 
   .card {
@@ -276,83 +277,94 @@ const { cards, class: className = '' } = Astro.props;
 
   @media (max-width: 768px) {
     .stacked-cards-container {
-      min-height: 420px;
+      min-height: auto;
       perspective: none;
-      padding: 20px 0;
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden;
+      padding: 0;
+      margin-top: 40px;
     }
 
     .cards-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
       transform-style: flat;
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+
+    /* 滚动容器 */
+    .cards-scroll-container {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding: 20px 0;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 卡片横向布局 */
+    .cards-inner {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto;
+      gap: 16px;
+      padding: 0 16px;
+      width: max-content;
     }
 
     .card {
-      position: absolute;
-      width: min(280px, 85vw);
+      position: relative;
+      width: 280px;
       height: 400px;
-      left: 50%;
-      transform: translateX(-50%) 
-                translateY(calc(var(--index) * -15px))
-                scale(calc(1 - var(--index) * 0.05));
-      transform-origin: center bottom;
-      opacity: calc(1 - var(--index) * 0.15);
+      flex-shrink: 0;
+      scroll-snap-align: center;
+      transform: none !important;
+      opacity: 1 !important;
+      margin: 0;
     }
 
-    .card:hover, .card:active {
-      transform: translateX(-50%) 
-                translateY(calc(var(--index) * -15px))
-                scale(1.02);
-      opacity: 1;
-      z-index: 10;
+    .card:hover {
+      transform: none !important;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        0 1px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-content {
+      opacity: 1 !important;
+    }
+
+    .card-image-wrapper {
+      height: 240px;
+    }
+
+    .card-info {
+      padding: 16px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      font-size: 0.875rem;
+      line-height: 1.4;
     }
   }
 
   @media (max-width: 480px) {
-    .stacked-cards-container {
-      min-height: 380px;
-      padding: 16px 0;
-    }
-
     .card {
-      width: min(260px, 80vw);
+      width: 260px;
       height: 380px;
-      transform: translateX(-50%) 
-                translateY(calc(var(--index) * -12px))
-                scale(calc(1 - var(--index) * 0.04));
-    }
-
-    .card:hover, .card:active {
-      transform: translateX(-50%) 
-                translateY(calc(var(--index) * -12px))
-                scale(1.02);
     }
 
     .card-image-wrapper {
-      height: 220px;
-    }
-  }
-
-  /* 触摸设备优化 */
-  @media (hover: none) {
-    .card {
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      height: 200px;
     }
 
-    .card:active {
-      transform: translateX(-50%) 
-                translateY(calc(var(--index) * -12px))
-                scale(1.02);
-      opacity: 1;
-      z-index: 10;
+    .card-info {
+      padding: 12px;
     }
   }
 </style>

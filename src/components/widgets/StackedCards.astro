@@ -99,6 +99,9 @@ const { cards, class: className = '' } = Astro.props;
                rotateY(0deg)
                scale(1.05);
     z-index: 2;
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.12),
+      0 2px 12px rgba(0, 0, 0, 0.08);
   }
 
   .card-content {
@@ -118,13 +121,13 @@ const { cards, class: className = '' } = Astro.props;
     height: 320px;
     overflow: hidden;
     position: relative;
+    background: #f8f8f8;
   }
 
   .card-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #f5f5f5;
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
@@ -134,64 +137,32 @@ const { cards, class: className = '' } = Astro.props;
 
   .card-info {
     padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background: linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0.95) 0%,
       rgba(255, 255, 255, 1) 100%
     );
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   .card-title {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #1a1a1a;
     line-height: 1.3;
+    color: #1a1a1a;
   }
 
   .card-description {
     font-size: 1rem;
-    color: #666;
     line-height: 1.5;
+    color: #666;
   }
 
-  /* Dark mode styles */
-  @media (prefers-color-scheme: dark) {
-    .card {
-      background: #1a1a1a;
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.3),
-        0 1px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .card:hover {
-      box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.4),
-        0 2px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-info {
-      background: linear-gradient(
-        to bottom,
-        rgba(26, 26, 26, 0.95) 0%,
-        rgba(26, 26, 26, 1) 100%
-      );
-    }
-
-    .card-title {
-      color: #ffffff;
-    }
-
-    .card-description {
-      color: rgba(255, 255, 255, 0.7);
-    }
-  }
-
-  /* Lightbox styles */
   .lightbox {
     display: none;
     position: fixed;
@@ -217,9 +188,9 @@ const { cards, class: className = '' } = Astro.props;
     max-height: 95vh;
     object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
     transform: scale(0.95);
     transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
   }
 
   .lightbox.active img {
@@ -236,9 +207,9 @@ const { cards, class: className = '' } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
     font-size: 2.5rem;
     background: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -256,52 +227,113 @@ const { cards, class: className = '' } = Astro.props;
     transform: translateX(-50%) scale(1.1);
   }
 
-  @media (max-width: 768px) {
-    .lightbox-close {
-      bottom: 40px;
-      width: 56px;
-      height: 56px;
-      font-size: 2.5rem;
-      background: rgba(0, 0, 0, 0.8);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  /* Dark mode styles */
+  :global(.dark) .card {
+    background: #1a1a1a;
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 1px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  :global(.dark) .card:hover {
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 2px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.dark) .card-image-wrapper {
+    background: #222;
+  }
+
+  :global(.dark) .card-info {
+    background: linear-gradient(
+      to bottom,
+      rgba(26, 26, 26, 0.95) 0%,
+      rgba(26, 26, 26, 1) 100%
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  :global(.dark) .card-title {
+    color: #ffffff;
+  }
+
+  :global(.dark) .card-description {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  :global(.dark) .lightbox {
+    background: rgba(0, 0, 0, 0.98);
+  }
+
+  :global(.dark) .lightbox img {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  }
+
+  :global(.dark) .lightbox-close {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  :global(.dark) .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Light mode styles */
+  @media (prefers-color-scheme: light) {
+    .card {
+      background: #ffffff;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        0 1px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .card:hover {
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-image-wrapper {
+      background: #f8f8f8;
+    }
+
+    .card-info {
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 1) 100%
+      );
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      color: #1a1a1a;
+    }
+
+    .card-description {
+      color: #666;
+    }
+
+    .lightbox {
+      background: rgba(0, 0, 0, 0.95);
     }
 
     .lightbox img {
-      max-width: 100%;
-      max-height: 100vh;
-      border-radius: 0;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .lightbox-close {
+      background: rgba(0, 0, 0, 0.7);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .lightbox-close:hover {
+      background: rgba(0, 0, 0, 0.9);
     }
   }
 
-  /* Responsive styles */
-  @media (max-width: 1280px) {
-    .card {
-      width: 340px;
-      height: 460px;
-      transform: translateX(calc(var(--index) * 60px - 50%)) 
-                translateZ(calc(var(--index) * -40px))
-                rotateY(calc(var(--index) * 3deg));
-    }
-
-    .card-image-wrapper {
-      height: 300px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .card {
-      width: 320px;
-      height: 440px;
-      transform: translateX(calc(var(--index) * 40px - 50%)) 
-                translateZ(calc(var(--index) * -30px))
-                rotateY(calc(var(--index) * 2deg));
-    }
-
-    .card-image-wrapper {
-      height: 280px;
-    }
-  }
-
+  /* Mobile styles */
   @media (max-width: 768px) {
     .stacked-cards-container {
       min-height: auto;
@@ -317,7 +349,6 @@ const { cards, class: className = '' } = Astro.props;
       position: relative;
     }
 
-    /* 滚动容器 */
     .cards-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -331,7 +362,6 @@ const { cards, class: className = '' } = Astro.props;
       display: none;
     }
 
-    /* 卡片横向布局 */
     .cards-inner {
       display: flex;
       gap: 16px;
@@ -352,9 +382,6 @@ const { cards, class: className = '' } = Astro.props;
 
     .card:hover {
       transform: none !important;
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.1),
-        0 1px 8px rgba(0, 0, 0, 0.06);
     }
 
     .card-content {
@@ -377,6 +404,19 @@ const { cards, class: className = '' } = Astro.props;
     .card-description {
       font-size: 0.875rem;
       line-height: 1.4;
+    }
+
+    .lightbox-close {
+      bottom: 40px;
+      width: 56px;
+      height: 56px;
+      font-size: 2.5rem;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100vh;
+      border-radius: 0;
     }
   }
 

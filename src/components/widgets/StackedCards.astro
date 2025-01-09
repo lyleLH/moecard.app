@@ -45,7 +45,8 @@ const cards = [
 ];
 ---
 
-<div class:list={['stacked-cards-container', className]} id="stacked-cards">
+<!-- Desktop Version -->
+<div class:list={['stacked-cards-container desktop-cards', className]} id="stacked-cards">
   <div class="cards-wrapper">
     <div class="cards-scroll-container">
       <div class="cards-inner">
@@ -79,6 +80,32 @@ const cards = [
   </div>
 </div>
 
+<!-- Mobile Version -->
+<div class="mobile-cards swiper" id="mobile-cards">
+  <div class="swiper-wrapper">
+    {
+      cards.map((card) => (
+        <div class="swiper-slide">
+          <div class="mobile-card">
+            <div class="card-image-wrapper">
+              <img
+                src={card.image}
+                alt={card.title}
+                class="card-image"
+              />
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">{card.title}</h3>
+              <p class="card-description">{card.description}</p>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="swiper-pagination"></div>
+</div>
+
 <!-- Lightbox Modal -->
 <div id="lightbox" class="lightbox">
   <button class="lightbox-close">&times;</button>
@@ -86,18 +113,85 @@ const cards = [
 </div>
 
 <style>
-  .stacked-cards-container {
-    position: relative;
-    width: 100%;
-    min-height: 480px;
-    perspective: 2000px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 0;
-    overflow: visible;
+  /* Desktop Styles */
+  .desktop-cards {
+    display: none;
   }
 
+  .mobile-cards {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .desktop-cards {
+      display: flex;
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      perspective: 2000px;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 0;
+      overflow: visible;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .mobile-cards {
+      display: block;
+      width: 100%;
+      padding: 20px 0;
+    }
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 767px) {
+    .mobile-card {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-card .card-image-wrapper {
+      width: 100%;
+      height: 240px;
+      overflow: hidden;
+      background: #f8f8f8;
+    }
+
+    .mobile-card .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mobile-card .card-info {
+      padding: 16px;
+    }
+
+    .mobile-card .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .mobile-card .card-description {
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    :global(.dark) .mobile-card {
+      background: #1a1a1a;
+    }
+
+    :global(.dark) .mobile-card .card-image-wrapper {
+      background: #222;
+    }
+  }
+
+  /* Desktop Card Styles */
   .cards-wrapper {
     position: relative;
     width: 420px;
@@ -297,6 +391,27 @@ const cards = [
 </style>
 
 <script>
+  import Swiper from 'swiper';
+  import { Pagination } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/pagination';
+
+  function initializeMobileSwiper() {
+    const mobileCards = document.getElementById('mobile-cards');
+    if (!mobileCards) return;
+
+    const swiper = new Swiper('.swiper', {
+      modules: [Pagination],
+      slidesPerView: 1.2,
+      spaceBetween: 16,
+      centeredSlides: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+    });
+  }
+
   function initializeCards() {
     const container = document.getElementById('stacked-cards');
     if (!container) return;
@@ -391,14 +506,24 @@ const cards = [
   }
 
   // Initialize on page load
-  document.addEventListener('DOMContentLoaded', initializeCards);
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeCards();
+    initializeMobileSwiper();
+  });
 
   // Re-initialize when the component is mounted
   if (document.readyState === 'complete') {
     initializeCards();
+    initializeMobileSwiper();
   }
 
   // Re-initialize on view transitions
-  document.addEventListener('astro:after-swap', initializeCards);
-  document.addEventListener('astro:page-load', initializeCards);
+  document.addEventListener('astro:after-swap', () => {
+    initializeCards();
+    initializeMobileSwiper();
+  });
+  document.addEventListener('astro:page-load', () => {
+    initializeCards();
+    initializeMobileSwiper();
+  });
 </script> 

@@ -2,6 +2,7 @@
 import Twemoji from '../common/Twemoji.astro';
 import { Image } from 'astro:assets';
 import mascotImage from '~/assets/images/design.png';
+import { getLangFromUrl, useTranslations } from '~/i18n/utils';
 
 interface Props {
   classes?: {
@@ -15,38 +16,14 @@ interface Props {
 
 const { classes = {} } = Astro.props;
 
-const features = [
-  {
-    icon: '📥',
-    title: '无限草稿',
-    description: '无限次数导出高清作品，让创作不受限制'
-  },
-  {
-    icon: '🎨',
-    title: '专属模板',
-    description: '独家精选模板，让你的作品与众不同'
-  },
-  {
-    icon: '🌈',
-    title: '高级滤镜',
-    description: '专业级滤镜效果，让作品更出彩'
-  },
-  {
-    icon: '🎯',
-    title: '优先体验',
-    description: '抢先体验新功能，享受最新创作体验'
-  },
-  {
-    icon: '💫',
-    title: '本地存储',
-    description: '不收集任何用户数据'
-  },
-  {
-    icon: '🎁',
-    title: '会员福利',
-    description: '定期获得专属福利，创作更有动力'
-  }
-];
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const features = t('pro.features') as Array<{
+  title: string;
+  description: string;
+  icon: string;
+}>;
 
 const baseCardClass = "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg transition-all duration-200";
 const baseIconClass = "flex-shrink-0 mr-4";
@@ -101,7 +78,7 @@ const baseDescClass = "text-gray-600 dark:text-gray-400 text-base leading-relaxe
         MoeCard Pro
       </h2>
       <p class:list={["text-xl text-gray-600 dark:text-gray-400", classes.headline?.subtitle]}>
-        解锁更多高级功能，让创作更专业
+        {t('pro.subtitle')}
       </p>
     </div>
 
@@ -129,7 +106,7 @@ const baseDescClass = "text-gray-600 dark:text-gray-400 text-base leading-relaxe
         class="inline-flex items-center px-8 py-3 text-lg font-medium text-white bg-gradient-to-r from-green-500 to-green-400 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <Twemoji emoji="✨" size="1.2em" class="mr-2" />
-        升级 Pro
+        {t('pro.cta')}
       </a>
     </div>
   </div>

@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import { SITE } from 'astrowind:config';
 import { getHomePermalink } from '~/utils/permalinks';
+import { getLangFromUrl, useTranslations } from '~/i18n/utils';
 
 interface Link {
   text?: string;
@@ -15,6 +16,21 @@ interface Links {
   links: Array<Link>;
 }
 
+interface FooterLinks {
+  company: {
+    title: string;
+    links: Link[];
+  };
+  product: {
+    title: string;
+    links: Link[];
+  };
+  support: {
+    title: string;
+    links: Link[];
+  };
+}
+
 export interface Props {
   links: Array<Links>;
   secondaryLinks: Array<Link>;
@@ -23,7 +39,29 @@ export interface Props {
   theme?: string;
 }
 
-const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+const { socialLinks = [], secondaryLinks = [], theme = 'light' } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const footerLinks = t('footer.links') as FooterLinks;
+const copyright = t('footer.copyright') as string;
+
+// 使用翻译的链接替换原有的链接
+const translatedLinks = [
+  {
+    title: footerLinks.company.title,
+    links: footerLinks.company.links
+  },
+  {
+    title: footerLinks.product.title,
+    links: footerLinks.product.links
+  },
+  {
+    title: footerLinks.support.title,
+    links: footerLinks.support.links
+  }
+];
 ---
 
 <footer class:list={[{ dark: theme === 'dark' }, 'relative border-t border-gray-200 dark:border-slate-800 not-prose']}>
@@ -52,7 +90,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
         </div>
       </div>
       {
-        links.map(({ title, links }) => (
+        translatedLinks.map(({ title, links }) => (
           <div class="col-span-6 md:col-span-3 lg:col-span-2">
             <div class="dark:text-gray-300 font-medium mb-2">{title}</div>
             {links && Array.isArray(links) && links.length > 0 && (
@@ -97,7 +135,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
       }
 
       <div class="text-sm mr-4 dark:text-muted">
-        <Fragment set:html={footNote} />
+        <Fragment set:html={copyright} />
       </div>
     </div>
   </div>

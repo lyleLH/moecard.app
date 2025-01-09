@@ -5,6 +5,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/grid';
 import 'photoswipe/style.css';
 import Twemoji from '../common/Twemoji.astro';
+import { getLangFromUrl, useTranslations } from '~/i18n/utils';
 
 interface Props {
   title?: string;
@@ -27,6 +28,9 @@ const {
   images = [],
   classes = {},
 } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class:list={['relative overflow-hidden', classes?.container]}>
@@ -34,19 +38,19 @@ const {
     {title && (
       <h2 class:list={['text-center mb-4 flex items-center justify-center gap-2', classes?.title]}>
         <Twemoji emoji="🎨" />
-        {title}
+        {t('gallery.title')}
       </h2>
     )}
     {subtitle && (
       <p class:list={['text-center mb-8', classes?.subtitle]}>
-        {subtitle}
+        {t('gallery.subtitle')}
       </p>
     )}
     
     <!-- 滑动提示 -->
     <div class="text-center mb-8 text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
       <Twemoji emoji="👆" />
-      <span>左右滑动查看更多精彩作品</span>
+      <span>{lang === 'zh' ? '左右滑动查看更多精彩作品' : 'Swipe left or right to see more works'}</span>
       <Twemoji emoji="✨" />
     </div>
     
@@ -87,59 +91,87 @@ import { Grid, Pagination, Autoplay } from 'swiper/modules';
 import PhotoSwipe from 'photoswipe';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
-// 初始化 Swiper
-new Swiper('.gallery-swiper', {
-  modules: [Grid, Pagination, Autoplay],
-  slidesPerView: 1.2,
-  grid: {
-    rows: 2,
-    fill: 'row'
-  },
-  spaceBetween: 16,
-  centeredSlides: true,
-  loop: true,
-  speed: 1000,
-  autoplay: {
-    delay: 3000,
-    disableOnInteraction: false,
-    pauseOnMouseEnter: true,
-  },
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true,
-    dynamicBullets: true,
-    dynamicMainBullets: 3,
-    renderBullet: function (index, className) {
-      return '<span class="' + className + '"><span class="dot"></span></span>';
-    },
-  },
-  breakpoints: {
-    640: {
-      slidesPerView: 2.2,
-      spaceBetween: 20,
-    },
-    768: {
-      slidesPerView: 3.2,
-      spaceBetween: 24,
-    },
-    1024: {
-      slidesPerView: 4.2,
-      spaceBetween: 24,
-    },
-  },
-});
+function initializeGallery() {
+  // 销毁已存在的 Swiper 实例
+  const existingSwiperElement = document.querySelector('.gallery-swiper');
+  const existingSwiper = (existingSwiperElement as any)?.swiper;
+  if (existingSwiper) {
+    existingSwiper.destroy(true, true);
+  }
 
-// 初始化 PhotoSwipe
-const lightbox = new PhotoSwipeLightbox({
-  gallery: 'section',
-  children: '.gallery-item',
-  pswpModule: PhotoSwipe,
-  padding: { top: 30, bottom: 30, left: 10, right: 10 },
-  bgOpacity: 0.9,
-  showHideAnimationType: 'fade',
-});
+  // 初始化 Swiper
+  new Swiper('.gallery-swiper', {
+    modules: [Grid, Pagination, Autoplay],
+    slidesPerView: 1.2,
+    grid: {
+      rows: 2,
+      fill: 'row'
+    },
+    spaceBetween: 16,
+    centeredSlides: true,
+    loop: true,
+    speed: 1000,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      dynamicBullets: true,
+      dynamicMainBullets: 3,
+      renderBullet: function (index, className) {
+        return '<span class="' + className + '"><span class="dot"></span></span>';
+      },
+    },
+    breakpoints: {
+      640: {
+        slidesPerView: 2.2,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 3.2,
+        spaceBetween: 24,
+      },
+      1024: {
+        slidesPerView: 4.2,
+        spaceBetween: 24,
+      },
+    },
+  });
 
-lightbox.init();
+  // 初始化 PhotoSwipe
+  const existingLightbox = document.querySelector('.pswp');
+  if (existingLightbox) {
+    existingLightbox.remove();
+  }
+
+  const lightbox = new PhotoSwipeLightbox({
+    gallery: 'section',
+    children: '.gallery-item',
+    pswpModule: PhotoSwipe,
+    padding: { top: 30, bottom: 30, left: 10, right: 10 },
+    bgOpacity: 0.9,
+    showHideAnimationType: 'fade',
+  });
+
+  lightbox.init();
+}
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', initializeGallery);
+
+// 视图转换后重新初始化
+document.addEventListener('astro:after-swap', initializeGallery);
+
+// 页面完全加载后初始化
+if (document.readyState === 'complete') {
+  initializeGallery();
+}
+
+// 确保在页面加载完成后初始化
+document.addEventListener('astro:page-load', initializeGallery);
 </script>
 
 <style>

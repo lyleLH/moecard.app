@@ -1,16 +1,48 @@
 ---
-interface Card {
-  title: string;
-  description: string;
-  image: string;
-}
+import { getLangFromUrl, useTranslations } from '~/i18n/utils';
 
 interface Props {
-  cards: Card[];
   class?: string;
 }
 
-const { cards, class: className = '' } = Astro.props;
+const { class: className = '' } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Define cards using translations
+const cards = [
+  {
+    title: t('stacked-cards.interaction.title') as string,
+    description: t('stacked-cards.interaction.desc') as string,
+    image: "https://i.postimg.cc/ZqhJ5KLd/moecard-preview.webp"
+  },
+  {
+    title: t('stacked-cards.editor.title') as string,
+    description: t('stacked-cards.editor.desc') as string,
+    image: "https://i.postimg.cc/8csS0FTq/texteditor.webp"
+  },
+  {
+    title: t('stacked-cards.pro.title') as string,
+    description: t('stacked-cards.pro.desc') as string,
+    image: "https://i.postimg.cc/pdYRhb01/pro-function.webp"
+  },
+  {
+    title: t('stacked-cards.canvas.title') as string,
+    description: t('stacked-cards.canvas.desc') as string,
+    image: "https://i.postimg.cc/vZnQy65y/canvas-sample.webp"
+  },
+  {
+    title: t('stacked-cards.drafts.title') as string,
+    description: t('stacked-cards.drafts.desc') as string,
+    image: "https://i.postimg.cc/TwdGn7F2/drafts.webp"
+  },
+  {
+    title: t('stacked-cards.assets.title') as string,
+    description: t('stacked-cards.assets.desc') as string,
+    image: "https://i.postimg.cc/Hx6mz01w/imagemakerandpicker.webp"
+  }
+];
 ---
 
 <div class:list={['stacked-cards-container', className]} id="stacked-cards">
@@ -68,7 +100,7 @@ const { cards, class: className = '' } = Astro.props;
 
   .cards-wrapper {
     position: relative;
-    width: 360px;
+    width: 420px;
     transform-style: preserve-3d;
     display: flex;
     justify-content: center;
@@ -87,19 +119,20 @@ const { cards, class: className = '' } = Astro.props;
     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     transform-origin: right center;
     cursor: pointer;
-    transform: translateX(calc(var(--index) * -80px))
-               translateZ(calc(var(--index) * -60px))
-               rotateY(calc(var(--index) * -5deg));
+    transform: translateX(calc(var(--index) * -40px))
+               translateZ(calc(var(--index) * -40px))
+               rotateY(calc(var(--index) * -4deg));
     right: 0;
     overflow: hidden;
+    will-change: transform, z-index;
   }
 
   .card:hover {
-    transform: translateX(calc(var(--index) * -80px))
+    transform: translateX(calc(var(--index) * -40px))
                translateZ(0)
                rotateY(0deg)
                scale(1.05);
-    z-index: 2;
+    z-index: 10;
   }
 
   .card-content {
@@ -108,6 +141,7 @@ const { cards, class: className = '' } = Astro.props;
     flex-direction: column;
     opacity: calc(1 - var(--index) * 0.15);
     transition: all 0.3s ease;
+    pointer-events: none;
   }
 
   .card:hover .card-content {
@@ -251,298 +285,120 @@ const { cards, class: className = '' } = Astro.props;
       rgba(26, 26, 26, 0.95) 0%,
       rgba(26, 26, 26, 1) 100%
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   :global(.dark) .card-title {
-    color: #ffffff;
+    color: #fff;
   }
 
   :global(.dark) .card-description {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  :global(.dark) .lightbox {
-    background: rgba(0, 0, 0, 0.98);
-  }
-
-  :global(.dark) .lightbox img {
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-  }
-
-  :global(.dark) .lightbox-close {
-    background: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  :global(.dark) .lightbox-close:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
-
-  /* Light mode styles */
-  @media (prefers-color-scheme: light) {
-    .card {
-      background: #ffffff;
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.1),
-        0 1px 8px rgba(0, 0, 0, 0.06);
-    }
-
-    .card:hover {
-      box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.12),
-        0 2px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .card-image-wrapper {
-      background: #f8f8f8;
-    }
-
-    .card-info {
-      background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(255, 255, 255, 1) 100%
-      );
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .card-title {
-      color: #1a1a1a;
-    }
-
-    .card-description {
-      color: #666;
-    }
-
-    .lightbox {
-      background: rgba(0, 0, 0, 0.95);
-    }
-
-    .lightbox img {
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-    }
-
-    .lightbox-close {
-      background: rgba(0, 0, 0, 0.7);
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .lightbox-close:hover {
-      background: rgba(0, 0, 0, 0.9);
-    }
-  }
-
-  /* Mobile styles */
-  @media (max-width: 768px) {
-    .stacked-cards-container {
-      min-height: auto;
-      perspective: none;
-      padding: 0;
-      margin-top: 40px;
-    }
-
-    .cards-wrapper {
-      transform-style: flat;
-      width: 100%;
-      height: auto;
-      position: relative;
-    }
-
-    .cards-scroll-container {
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x mandatory;
-      padding: 20px 0;
-    }
-
-    .cards-scroll-container::-webkit-scrollbar {
-      display: none;
-    }
-
-    .cards-inner {
-      display: flex;
-      gap: 16px;
-      padding: 0 16px;
-      width: max-content;
-    }
-
-    .card {
-      position: relative;
-      width: 280px;
-      height: 400px;
-      flex-shrink: 0;
-      scroll-snap-align: center;
-      transform: none !important;
-      opacity: 1 !important;
-      margin: 0;
-    }
-
-    .card:hover {
-      transform: none !important;
-    }
-
-    .card-content {
-      opacity: 1 !important;
-    }
-
-    .card-image-wrapper {
-      height: 240px;
-    }
-
-    .card-info {
-      padding: 16px;
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-      margin-bottom: 8px;
-    }
-
-    .card-description {
-      font-size: 0.875rem;
-      line-height: 1.4;
-    }
-
-    .lightbox-close {
-      bottom: 40px;
-      width: 56px;
-      height: 56px;
-      font-size: 2.5rem;
-    }
-
-    .lightbox img {
-      max-width: 100%;
-      max-height: 100vh;
-      border-radius: 0;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .card {
-      width: 260px;
-      height: 380px;
-    }
-
-    .card-image-wrapper {
-      height: 200px;
-    }
-
-    .card-info {
-      padding: 12px;
-    }
+    color: #aaa;
   }
 </style>
 
 <script>
-const container = document.getElementById('stacked-cards');
-const cards = container?.querySelectorAll('.card') as NodeListOf<HTMLElement>;
-const lightbox = document.getElementById('lightbox');
-const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
-const lightboxClose = document.querySelector('.lightbox-close');
+  function initializeCards() {
+    const container = document.getElementById('stacked-cards');
+    if (!container) return;
 
-if (container && cards && lightbox && lightboxImage && lightboxClose) {
-  let activeIndex = -1;
-  let isAnimating = false;
+    const cards = Array.from(container.querySelectorAll('.card')) as HTMLElement[];
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
+    const lightboxClose = document.querySelector('.lightbox-close');
 
-  // 点击卡片打开大图
-  cards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.classList.contains('card-image')) {
-        const imageUrl = card.getAttribute('data-image');
-        if (imageUrl && !isAnimating) {
-          isAnimating = true;
-          lightboxImage.src = imageUrl;
-          lightbox.classList.add('active');
-          document.body.style.overflow = 'hidden';
-          setTimeout(() => {
-            isAnimating = false;
-          }, 300);
+    if (!lightbox || !lightboxImage || !lightboxClose) return;
+
+    // 卡片交互处理
+    cards.forEach((card, index) => {
+      // 鼠标进入卡片
+      card.addEventListener('mouseenter', (e) => {
+        const rect = card.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        
+        // 只在卡片右侧区域触发
+        if (mouseX > rect.width * 0.3) {
+          card.style.transform = `
+            translateX(calc(${index} * -40px))
+            translateZ(0)
+            rotateY(0deg)
+            scale(1.05)
+          `;
+          card.style.zIndex = '10';
+          
+          // 调整其他卡片的位置
+          cards.forEach((otherCard, otherIndex) => {
+            if (otherIndex !== index) {
+              if (otherIndex > index) {
+                // 后面的卡片
+                otherCard.style.transform = `
+                  translateX(calc(${otherIndex} * -40px + 20px))
+                  translateZ(calc(${otherIndex - index} * -40px))
+                  rotateY(calc(${otherIndex - index} * -4deg))
+                `;
+              } else {
+                // 前面的卡片
+                otherCard.style.transform = `
+                  translateX(calc(${otherIndex} * -40px))
+                  translateZ(calc(${index - otherIndex} * -40px))
+                  rotateY(calc(${index - otherIndex} * -4deg))
+                `;
+              }
+              otherCard.style.zIndex = '1';
+            }
+          });
         }
+      });
+
+      // 鼠标离开卡片
+      card.addEventListener('mouseleave', () => {
+        // 恢复所有卡片的原始状态
+        cards.forEach((card, cardIndex) => {
+          card.style.transform = `
+            translateX(calc(${cardIndex} * -40px))
+            translateZ(calc(${cardIndex} * -40px))
+            rotateY(calc(${cardIndex} * -4deg))
+          `;
+          card.style.zIndex = '';
+        });
+      });
+
+      // 点击事件处理
+      card.addEventListener('click', () => {
+        const imageUrl = card.dataset.image;
+        if (!imageUrl) return;
+        
+        lightboxImage.src = imageUrl;
+        lightbox.classList.add('active');
+      });
+    });
+
+    // Lightbox 关闭处理
+    lightboxClose.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        lightbox.classList.remove('active');
       }
     });
-  });
 
-  // 关闭灯箱
-  const closeLightbox = () => {
-    if (!isAnimating) {
-      isAnimating = true;
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-      setTimeout(() => {
-        isAnimating = false;
-      }, 300);
-    }
-  };
-
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-      closeLightbox();
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-      closeLightbox();
-    }
-  });
-
-  // 鼠标悬停效果
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isAnimating || window.innerWidth <= 768) return; // 在移动端禁用鼠标悬停效果
-
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const cardWidth = rect.width / cards.length;
-    const newIndex = Math.floor(x / cardWidth);
-    
-    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < cards.length) {
-      activeIndex = newIndex;
-      cards.forEach((card) => {
-        const index = Number(card.getAttribute('data-card-index'));
-        const offset = index - activeIndex;
-        const scale = activeIndex === index ? 1.05 : 1;
-        const zIndex = activeIndex === index ? cards.length : cards.length - Math.abs(offset);
-        
-        card.style.transform = `
-          translateX(calc(${offset * 80}px + ${index * 80}px - 50%))
-          translateZ(${Math.abs(offset) * -30}px)
-          rotateY(${offset * 5}deg)
-          scale(${scale})
-        `;
-        card.style.zIndex = String(zIndex);
-      });
-    }
-  };
-
-  // 重置卡片位置
-  const resetCards = () => {
-    if (isAnimating) return;
-    
-    activeIndex = -1;
-    cards.forEach((card) => {
-      const index = Number(card.getAttribute('data-card-index'));
-      card.style.transform = `
-        translateX(calc(${index * 80}px - 50%))
-        translateZ(${index * -60}px)
-        rotateY(${index * 5}deg)
-      `;
-      card.style.zIndex = String(cards.length - index);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.classList.remove('active');
+      }
     });
-  };
+  }
 
-  container.addEventListener('mousemove', handleMouseMove);
-  container.addEventListener('mouseleave', resetCards);
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', initializeCards);
 
-  // 添加窗口大小变化监听
-  window.addEventListener('resize', () => {
-    if (window.innerWidth <= 768) {
-      resetCards();
-    }
-  });
-}
+  // Re-initialize when the component is mounted
+  if (document.readyState === 'complete') {
+    initializeCards();
+  }
+
+  // Re-initialize on view transitions
+  document.addEventListener('astro:after-swap', initializeCards);
+  document.addEventListener('astro:page-load', initializeCards);
 </script> 

@@ -182,8 +182,8 @@ metadata:
         height: 628
     type: website
   twitter:
-    handle: '@twitter_user'
-    site: '@twitter_user'
+    handle: '@moecardapp'
+    site: '@moecard.app'
     cardType: summary_large_image
 
 i18n:

@@ -194,7 +194,7 @@ const cards = [
             </div>
             <div class="ml-4">
               <h2 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">MoE Card</h2>
-              <p class="text-sm text-gray-600 dark:text-gray-300">让创作更有趣</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{tagline}</p>
             </div>
           </div>
           {
@@ -255,356 +255,106 @@ const cards = [
   </div>
 </section>
 
-<script>
-import lottie from 'lottie-web';
-
-// 初始化动画
-document.addEventListener('DOMContentLoaded', () => {
-  const elements = {
-    dots: document.getElementById('dots-animation'),
-    curve: document.getElementById('curve-animation'),
-    circles: document.getElementById('circles-animation'),
-    wave: document.getElementById('wave-animation')
-  };
-
-  // 确保所有元素都存在
-  if (!elements.dots || !elements.curve || !elements.circles || !elements.wave) {
-    console.warn('Some animation elements not found');
-    return;
-  }
-
-  // 点阵动画
-  lottie.loadAnimation({
-    container: elements.dots as Element,
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    animationData: {
-      v: "5.7.4",
-      fr: 30,
-      ip: 0,
-      op: 60,
-      w: 200,
-      h: 200,
-      layers: [{
-        ty: 4,
-        nm: "Dots",
-        ks: {
-          o: { a: 0, k: 70 },
-          r: { a: 1, k: [{ t: 0, s: [0] }, { t: 60, s: [360] }] }
-        },
-        shapes: Array.from({ length: 24 }, (_, i) => ({
-          ty: "el",
-          p: { a: 0, k: [Math.cos(i * 15 * Math.PI / 180) * 80 + 100, Math.sin(i * 15 * Math.PI / 180) * 80 + 100] },
-          s: { a: 0, k: [6, 6] },
-          fl: { c: { a: 0, k: [0.13, 0.8, 0.42] } }
-        }))
-      }]
-    }
-  });
-
-  // 曲线动画
-  lottie.loadAnimation({
-    container: elements.curve as Element,
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    animationData: {
-      v: "5.7.4",
-      fr: 30,
-      ip: 0,
-      op: 120,
-      w: 100,
-      h: 100,
-      layers: [{
-        ty: 4,
-        nm: "Curve",
-        ks: { o: { a: 0, k: 60 } },
-        shapes: [{
-          ty: "sh",
-          ks: {
-            a: 1,
-            k: [
-              { t: 0, s: [{ c: false, v: [[20,50], [50,20], [80,50]] }] },
-              { t: 60, s: [{ c: false, v: [[20,50], [50,80], [80,50]] }] },
-              { t: 120, s: [{ c: false, v: [[20,50], [50,20], [80,50]] }] }
-            ]
-          },
-          st: { w: 3, c: [0.13, 0.8, 0.42] }
-        }]
-      }]
-    }
-  });
-
-  // 圆环动画
-  lottie.loadAnimation({
-    container: elements.circles as Element,
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    animationData: {
-      v: "5.7.4",
-      fr: 30,
-      ip: 0,
-      op: 90,
-      w: 100,
-      h: 100,
-      layers: [{
-        ty: 4,
-        nm: "Circles",
-        ks: {
-          o: { a: 0, k: 50 },
-          s: { a: 1, k: [
-            { t: 0, s: [100, 100] },
-            { t: 45, s: [110, 110] },
-            { t: 90, s: [100, 100] }
-          ]}
-        },
-        shapes: [
-          {
-            ty: "el",
-            p: { a: 0, k: [50, 50] },
-            s: { a: 0, k: [80, 80] },
-            st: { w: 3, c: [0.13, 0.8, 0.42] }
-          }
-        ]
-      }]
-    }
-  });
-
-  // 波浪动画
-  lottie.loadAnimation({
-    container: elements.wave as Element,
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    animationData: {
-      v: "5.7.4",
-      fr: 30,
-      ip: 0,
-      op: 180,
-      w: 1440,
-      h: 100,
-      layers: [{
-        ty: 4,
-        nm: "Wave",
-        ks: { o: { a: 0, k: 30 } },
-        shapes: [{
-          ty: "sh",
-          ks: {
-            a: 1,
-            k: [
-              { t: 0, s: [{ c: true, v: [[0,50], [480,0], [960,50], [1440,0], [1440,100], [0,100]] }] },
-              { t: 90, s: [{ c: true, v: [[0,0], [480,50], [960,0], [1440,50], [1440,100], [0,100]] }] },
-              { t: 180, s: [{ c: true, v: [[0,50], [480,0], [960,50], [1440,0], [1440,100], [0,100]] }] }
-            ]
-          },
-          fl: { c: { a: 0, k: [0.13, 0.8, 0.42, 0.15] } }
-        }]
-      }]
-    }
-  });
-});
-</script>
-
 <style>
-/* 自定义动画关键帧 */
-@keyframes particle {
-  0% {
-    transform: translate(0, 0) scale(0);
-    opacity: 0;
+  @keyframes particle {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.2);
+      opacity: 0.8;
+    }
   }
-  20% {
-    opacity: 1;
-  }
-  50% {
-    transform: translate(var(--tx, 100px), var(--ty, -100px)) scale(1);
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(calc(var(--tx, 100px) * 2), calc(var(--ty, -100px) * 2)) scale(0);
-    opacity: 0;
-  }
-}
 
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
+  @keyframes draw {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
   }
-}
 
-@keyframes draw {
-  0% {
-    stroke-dasharray: 0 100;
+  @keyframes wave {
+    0% {
+      transform: translateX(0) translateZ(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(-25%) translateZ(0) scaleY(0.8);
+    }
+    100% {
+      transform: translateX(-50%) translateZ(0) scaleY(1);
+    }
   }
-  100% {
-    stroke-dasharray: 100 100;
-  }
-}
 
-@keyframes wave {
-  0% {
-    transform: translateX(0) translateZ(0);
+  .animate-particle {
+    animation: particle var(--duration, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
   }
-  50% {
-    transform: translateX(-25%) translateZ(0);
-  }
-  100% {
-    transform: translateX(-50%) translateZ(0);
-  }
-}
 
-@keyframes pulse-slow {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.5;
+  .animate-draw {
+    stroke-dasharray: 100;
+    animation: draw 2s ease-in-out infinite;
   }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
+
+  .animate-draw-delay {
+    stroke-dasharray: 100;
+    animation: draw 2s ease-in-out 1s infinite;
   }
-}
 
-/* 动画类 */
-.animate-particle {
-  --tx: random(-100, 100);
-  --ty: random(-100, 100);
-  animation: particle var(--duration, 3s) ease-out infinite;
-  animation-delay: var(--delay, 0s);
-  transform-origin: center;
-  will-change: transform, opacity;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-.animate-draw {
-  animation: draw 3s ease-out forwards;
-}
-
-.animate-draw-delay {
-  animation: draw 3s ease-out 0.5s forwards;
-}
-
-.animate-wave {
-  animation: wave 10s linear infinite;
-  width: 200%;
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 4s ease-in-out infinite;
-}
-
-.animate-pulse-slow-delay {
-  animation: pulse-slow 4s ease-in-out 2s infinite;
-}
-
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .dark\:text-green-900\/20 {
-    color: rgb(20 83 45 / 0.2);
+  .animate-wave {
+    animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+    transform-origin: 0% 100%;
   }
-  .dark\:text-green-900\/30 {
-    color: rgb(20 83 45 / 0.3);
-  }
-  .dark\:text-green-800\/30 {
-    color: rgb(20 83 45 / 0.3);
-  }
-  .dark\:text-green-700\/30 {
-    color: rgb(20 83 45 / 0.3);
-  }
-}
 
-/* 添加浮动动画 */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0);
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-  }
-}
 
-@keyframes float-delay {
-  0%, 100% {
-    transform: translateY(0) rotate(-15deg);
+  .animate-float-delay {
+    animation: float 6s ease-in-out 2s infinite;
   }
-  50% {
-    transform: translateY(-8px) rotate(-10deg);
-  }
-}
 
-@keyframes float-reverse {
-  0%, 100% {
-    transform: translateY(0) rotate(10deg);
+  .animate-float-reverse {
+    animation: float 6s ease-in-out infinite reverse;
   }
-  50% {
-    transform: translateY(8px) rotate(15deg);
+
+  .animate-float-slow {
+    animation: float 8s ease-in-out infinite;
   }
-}
 
-@keyframes float-slow {
-  0%, 100% {
-    transform: translateY(0) rotate(-5deg) scale(1);
+  .animate-float-bounce {
+    animation: floatBounce 4s ease-in-out infinite;
   }
-  50% {
-    transform: translateY(-12px) rotate(0deg) scale(1.05);
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(var(--rotate, 0deg));
+    }
+    50% {
+      transform: translateY(-20px) rotate(var(--rotate, 0deg));
+    }
   }
-}
 
-@keyframes float-bounce {
-  0%, 100% {
-    transform: translateY(0) rotate(15deg) scale(1);
+  @keyframes floatBounce {
+    0%, 100% {
+      transform: translateY(0) rotate(var(--rotate, 0deg)) scale(1);
+    }
+    50% {
+      transform: translateY(-15px) rotate(var(--rotate, 0deg)) scale(1.1);
+    }
   }
-  40% {
-    transform: translateY(-15px) rotate(10deg) scale(1.1);
+
+  .animate-spin-slow {
+    animation: spin 10s linear infinite;
   }
-  60% {
-    transform: translateY(-15px) rotate(20deg) scale(1.1);
+
+  .animate-pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
   }
-}
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-delay {
-  animation: float-delay 7s ease-in-out infinite;
-}
-
-.animate-float-reverse {
-  animation: float-reverse 8s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float-slow 10s ease-in-out infinite;
-}
-
-.animate-float-bounce {
-  animation: float-bounce 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@media (max-width: 768px) {
-  .relative.mx-auto.h-full {
-    min-height: auto;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+  .animate-pulse-slow-delay {
+    animation: pulse 4s ease-in-out 2s infinite;
   }
-}
 </style>
-
-<script>
-// 为每个粒子设置随机运动方向
-document.addEventListener('DOMContentLoaded', () => {
-  const particles = document.querySelectorAll('.animate-particle');
-  particles.forEach(particle => {
-    const tx = (Math.random() - 0.5) * 200; // -100 到 100 之间的随机值
-    const ty = (Math.random() - 0.5) * 200;
-    particle.style.setProperty('--tx', `${tx}px`);
-    particle.style.setProperty('--ty', `${ty}px`);
-  });
-});
-</script>

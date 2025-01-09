@@ -1,0 +1,35 @@
+---
+import { languages, defaultLang } from '~/i18n/translations';
+import { getLangFromUrl, getLocalizedPath } from '~/i18n/utils';
+
+const currentLang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+
+const items = Object.entries(languages).map(([lang, label]) => ({
+  lang,
+  label,
+  href: getLocalizedPath(currentPath, lang),
+  isActive: currentLang === lang,
+}));
+---
+
+<div class="relative inline-block text-left">
+  <div class="flex items-center gap-2">
+    {
+      items.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            'px-3 py-1 text-sm rounded-full transition-colors',
+            {
+              'bg-green-500 text-white': item.isActive,
+              'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white': !item.isActive,
+            },
+          ]}
+        >
+          {item.label.toUpperCase()}
+        </a>
+      ))
+    }
+  </div>
+</div> 

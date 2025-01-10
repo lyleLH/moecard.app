@@ -129,7 +129,7 @@ export const translations = {
         icon: '💫'
       }
     ],
-    'pro.cta': '升级会员',
+    'pro.cta': '立即下载体验',
 
     'cta.title': '开始你的创作之旅',
     'cta.subtitle': '下载 MoE Card，让创作充满乐趣',
@@ -288,7 +288,7 @@ export const translations = {
         icon: '💫'
       }
     ],
-    'pro.cta': 'Upgrade to Pro',
+    'pro.cta': 'Download',
 
     'cta.title': 'Start Your Creative Journey',
     'cta.subtitle': 'Download MoE Card, Make Creation Fun',

@@ -7,7 +7,7 @@ export const defaultLang = 'en';
 
 export const translations = {
   zh: {
-    'site.title': 'MoE Card - Make Creation Fun',
+    'site.title': '萌艺卡片 - Make Creation Fun',
     'site.description': '丝滑手势，精美字体、丰富表情，让你的创作充满趣味',
     
     'nav.features': '功能介绍',
@@ -16,7 +16,7 @@ export const translations = {
     'nav.download': '立即下载',
     
     'hero.tagline': '让创作更有趣',
-    'hero.title.app': 'MoE Card',
+    'hero.title.app': '萌艺卡片',
     'hero.title.desc': '有趣而强大的卡片创作工具',
     'hero.subtitle': '丝滑手势，精美字体、丰富表情，让你的创作充满趣味',
     'hero.cta.download': '立即下载',
@@ -41,31 +41,31 @@ export const translations = {
     'stacked-cards.assets.desc': '内置图像制作和选择工具，让创作更加便捷',
     
     'features.title': '功能介绍',
-    'features.subtitle': '看看能用 MoE Card 创作什么',
+    'features.subtitle': '看看能用 萌艺卡片 创作什么',
     'features.items': [
       {
-        title: '丰富表情',
-        description: '内置完整的 Twemoji 表情包，让设计更有趣',
-        icon: '😊',
+        title: '社交媒体内容',
+        description: '简单轻松制作多种尺寸的社交媒体内容',
+        icon: '👍',
       },
       {
-        title: '无限草稿',
-        description: '随时保存创作进度，灵感不中断',
-        icon: '📝',
-      },
-      {
-        title: '自定义素材',
-        description: '导入你喜欢的图片，让创作更自由',
-        icon: '🖼️',
-      },
-      {
-        title: '无水印导出',
-        description: '高清作品导出，分享更专业',
+        title: '传单卡片',
+        description: '简单轻松制作传单卡片',
         icon: '🎉',
       },
       {
-        title: '字体管理',
-        description: '支持自定义字体，让文字更有个性',
+        title: '少儿涂鸦，拼贴画',
+        description: '简单轻松制作少儿涂鸦，拼贴画',
+        icon: '🎨',
+      },
+      {
+        title: '礼品卡，纪念册',
+        description: '简单轻松制作礼品卡，纪念册',
+        icon: '🎉',
+      },
+      {
+        title: '文字内容引用',
+        description: '支持丰富的字体和样式，制作文字内容引用',
         icon: '🔤',
       },
       {
@@ -89,7 +89,7 @@ export const translations = {
         image: '/gallery/card2.webp'
       },
       {
-        title: '表情符号',
+        title: 'Twemoji 表情',
         description: '丰富的表情让作品更生动',
         image: '/gallery/card3.webp'
       }
@@ -104,35 +104,35 @@ export const translations = {
         icon: '🎨'
       },
       {
-        title: '高级模板',
-        description: '独享精选专业模板',
+        title: '无水印导出',
+        description: '去除App水印，导出高清作品',
         icon: '✨'
       },
       {
-        title: '云端同步',
-        description: '作品自动云端备份',
-        icon: '☁️'
-      },
-      {
-        title: '批量导出',
-        description: '批量导出高清作品',
-        icon: '📤'
+        title: '画布资源管理',
+        description: '简单有趣的素材编辑和创作',
+        icon: '🎨'
       },
       {
         title: '自定义字体',
-        description: '导入使用自定义字体',
+        description: '下载导入海量字体，让你的作品更个性',
         icon: '🔤'
       },
       {
+        title: 'Twemoji 表情',
+        description: '全部Twemoji高清表情图标',
+        icon: '😊'
+      },
+      {
         title: '优先支持',
-        description: '获得优先技术支持',
+        description: '联系作者，获得优先支持',
         icon: '💫'
       }
     ],
     'pro.cta': '立即下载体验',
 
     'cta.title': '开始你的创作之旅',
-    'cta.subtitle': '下载 MoE Card，让创作充满乐趣',
+    'cta.subtitle': '下载 萌艺卡片，让创作充满乐趣',
 
     'footer.links': {
       company: {
@@ -203,28 +203,28 @@ export const translations = {
     'features.subtitle': 'See What You Can Create with MoE Card',
     'features.items': [
       {
-        title: 'Rich Emojis',
-        description: 'Built-in complete Twemoji pack makes design more fun',
-        icon: '😊',
+        title: 'Social Media Content',
+        description: 'Easily create social media content in various sizes',
+        icon: '👍',
       },
       {
-        title: 'Unlimited Drafts',
-        description: 'Save creation progress anytime, inspiration never stops',
-        icon: '📝',
-      },
-      {
-        title: 'Custom Materials',
-        description: 'Import your favorite images for more creative freedom',
-        icon: '🖼️',
-      },
-      {
-        title: 'No Watermark Export',
-        description: 'High-quality export for professional sharing',
+        title: 'Flyer Cards',
+        description: 'Easily create flyer cards',
         icon: '🎉',
       },
       {
-        title: 'Font Management',
-        description: 'Support custom fonts for more personalized text',
+        title: 'Kids Doodles & Collages',
+        description: 'Easily create kids doodles and collage art',
+        icon: '🎨',
+      },
+      {
+        title: 'Gift Cards & Memory Books',
+        description: 'Easily create gift cards and memory books',
+        icon: '🎉',
+      },
+      {
+        title: 'Text Content Quotes',
+        description: 'Support rich fonts and styles for text content quotes',
         icon: '🔤',
       },
       {
@@ -259,32 +259,32 @@ export const translations = {
     'pro.features': [
       {
         title: 'Unlimited Creation',
-        description: 'Create and save without limits',
+        description: 'Create and save works without limits',
         icon: '🎨'
       },
       {
-        title: 'Premium Templates',
-        description: 'Exclusive professional templates',
+        title: 'No Watermark Export',
+        description: 'Remove app watermark, export in high quality',
         icon: '✨'
       },
       {
-        title: 'Cloud Sync',
-        description: 'Auto backup to cloud',
-        icon: '☁️'
-      },
-      {
-        title: 'Batch Export',
-        description: 'Batch export in high quality',
-        icon: '📤'
+        title: 'Canvas Asset Management',
+        description: 'Simple and fun material editing and creation',
+        icon: '🎨'
       },
       {
         title: 'Custom Fonts',
-        description: 'Import and use custom fonts',
+        description: 'Download and import massive font library for more personalized works',
         icon: '🔤'
       },
       {
+        title: 'Twemoji Icons',
+        description: 'Complete Twemoji high-quality emoji icons',
+        icon: '😊'
+      },
+      {
         title: 'Priority Support',
-        description: 'Get priority technical support',
+        description: 'Contact the developer for priority support',
         icon: '💫'
       }
     ],

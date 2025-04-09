@@ -1,10 +1,20 @@
 ---
-import favIcon from '~/assets/favicons/favicon.ico';
-import favIconSvg from '~/assets/favicons/favicon.svg';
-import appleTouchIcon from '~/assets/favicons/apple-touch-icon.png';
+import favicon from '~/assets/favicons/favicon.ico';
+import favicon32 from '~/assets/favicons/favicon-32x32.svg';
+import favicon192 from '~/assets/favicons/favicon-192x192.png';
+import favicon512 from '~/assets/favicons/favicon-512x512.png';
+import favicon180 from '~/assets/favicons/favicon-180x180.png';
 ---
 
-<link rel="shortcut icon" href={favIcon} />
-<link rel="icon" type="image/svg+xml" href={favIconSvg.src} />
-<link rel="mask-icon" href={favIconSvg.src} color="#8D46E7" />
-<link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
+<!-- Basic favicons -->
+<link rel="icon" href={favicon.src} sizes="any" />
+<link rel="icon" href={favicon32.src} type="image/svg+xml" />
+<link rel="apple-touch-icon" href={favicon180.src} />
+
+<!-- PWA support -->
+<link rel="manifest" href="/src/assets/favicons/site.webmanifest" />
+<meta name="theme-color" content="#4ade80" />
+
+<!-- Additional sizes for better device support -->
+<link rel="icon" type="image/png" sizes="192x192" href={favicon192.src} />
+<link rel="icon" type="image/png" sizes="512x512" href={favicon512.src} />

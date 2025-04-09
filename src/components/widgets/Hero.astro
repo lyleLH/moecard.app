@@ -62,13 +62,45 @@ const cards = [
 ];
 ---
 
-<section class="relative not-prose min-h-screen" {...id ? { id } : {}}>
+<section class="relative not-prose min-h-[calc(100vh-var(--header-height,0px))] flex flex-col justify-center overflow-hidden" {...id ? { id } : {}}>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
     <slot name="bg">
       {
         bg ? <Fragment set:html={bg} /> : 
         <div class="absolute inset-0 overflow-hidden">
-          <!-- App 形象装饰 -->
+          <!-- 渐变背景 -->
+          <div class="absolute inset-0 bg-gradient-to-br from-green-50/50 via-white to-green-100/30 dark:from-green-900/20 dark:via-slate-900 dark:to-green-800/20"></div>
+          
+          <!-- 几何形状动画 -->
+          <div class="absolute inset-0">
+            <!-- 动态网格背景 -->
+            <div class="absolute inset-0 opacity-10 dark:opacity-5">
+              <div class="absolute inset-0 bg-[linear-gradient(to_right,#4ade80_1px,transparent_1px),linear-gradient(to_bottom,#4ade80_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_110%)]"></div>
+            </div>
+
+            <!-- 浮动几何形状 -->
+            <div class="absolute left-[10%] top-[20%] w-64 h-64 bg-green-200/20 dark:bg-green-800/20 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute right-[15%] bottom-[25%] w-72 h-72 bg-green-300/20 dark:bg-green-700/20 rounded-full blur-3xl animate-float-delay"></div>
+            <div class="absolute left-[20%] bottom-[15%] w-48 h-48 bg-green-400/20 dark:bg-green-600/20 rounded-full blur-3xl animate-float-reverse"></div>
+            
+            <!-- 动态线条 -->
+            <div class="absolute inset-0">
+              <svg class="w-full h-full opacity-20 dark:opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path
+                  d="M0,50 Q25,20 50,50 T100,50"
+                  class="stroke-green-400 dark:stroke-green-500 fill-none animate-draw"
+                  stroke-width="0.5"
+                  pathLength="100"
+                />
+                <path
+                  d="M0,60 Q25,30 50,60 T100,60"
+                  class="stroke-green-300 dark:stroke-green-600 fill-none animate-draw-delay"
+                  stroke-width="0.5"
+                  pathLength="100"
+                />
+              </svg>
+          </div>
+          </div>
           <div class="absolute right-[5%] top-[15%] w-48 h-48 opacity-20 dark:opacity-10">
             <Image
               src={mascotImage}
@@ -90,121 +122,49 @@ const cards = [
               class="w-full h-full object-contain animate-float-reverse"
             />
           </div>
-          <div class="absolute left-[20%] top-[25%] w-36 h-36 opacity-15 dark:opacity-10 rotate-[-5deg]">
-            <Image
-              src={mascotImage}
-              alt="MoeCard Mascot"
-              class="w-full h-full object-contain animate-float-slow"
-            />
-          </div>
-          <div class="absolute right-[25%] top-[40%] w-24 h-24 opacity-15 dark:opacity-10 rotate-[15deg]">
-            <Image
-              src={mascotImage}
-              alt="MoeCard Mascot"
-              class="w-full h-full object-contain animate-float-bounce"
-            />
-          </div>
 
-          <!-- 粒子动画 -->
+          <!-- 现代粒子效果 -->
           <div class="absolute inset-0">
             {particles.map((particle) => (
               <div
-                class="absolute w-1 h-1 bg-green-400 dark:bg-green-300 rounded-full animate-particle"
+                class="absolute rounded-full bg-gradient-to-r from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 animate-particle"
                 style={{
                   top: `${particle.top}%`,
                   left: `${particle.left}%`,
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   animationDelay: `${particle.delay}s`,
-                  animationDuration: `${particle.duration}s`
+                  animationDuration: `${particle.duration}s`,
+                  opacity: 0.3
                 }}
               />
             ))}
           </div>
 
-          <!-- 左上角装饰 -->
-          <div class="absolute -left-4 -top-4 w-64 h-64 bg-green-50 dark:bg-green-900/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-          
-          <!-- 右上角装饰 -->
-          <div class="absolute -right-16 -top-16 w-48 h-48">
-            <svg class="w-full h-full text-green-200 dark:text-green-900/30 animate-spin-slow" viewBox="0 0 200 200">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <circle
-                  cx={100 + Math.cos(i * 30 * Math.PI / 180) * 70}
-                  cy={100 + Math.sin(i * 30 * Math.PI / 180) * 70}
-                  r="4"
-                  class="fill-current"
-                />
-              ))}
+          <!-- 新的波浪动画 -->
+          <div class="absolute bottom-0 left-0 w-full">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
+              <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+              </defs>
+              <g class="wave-parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" class="wave1" />
+                <use xlink:href="#gentle-wave" x="48" y="3" class="wave2" />
+                <use xlink:href="#gentle-wave" x="48" y="5" class="wave3" />
+                <use xlink:href="#gentle-wave" x="48" y="7" class="wave4" />
+              </g>
             </svg>
-          </div>
-          
-          <!-- 左侧装饰 -->
-          <div class="absolute left-1/4 top-1/4 w-32 h-32">
-            <svg class="w-full h-full text-green-300 dark:text-green-800/30" viewBox="0 0 100 100">
-              <path
-                d="M10,50 Q30,20 50,50 T90,50"
-                class="stroke-current fill-none animate-draw"
-                stroke-width="2"
-                pathLength="100"
-              />
-              <path
-                d="M10,60 Q30,30 50,60 T90,60"
-                class="stroke-current fill-none animate-draw-delay"
-                stroke-width="2"
-                pathLength="100"
-              />
-            </svg>
-          </div>
-          
-          <!-- 右侧装饰 -->
-          <div class="absolute right-1/4 bottom-1/4">
-            <div class="w-24 h-24 rounded-full border-4 border-green-200 dark:border-green-800/30 opacity-50 animate-pulse-slow"></div>
-            <div class="w-16 h-16 rounded-full border-4 border-green-300 dark:border-green-700/30 opacity-50 -mt-20 ml-12 animate-pulse-slow-delay"></div>
-          </div>
-          
-          <!-- 底部装饰 -->
-          <div class="absolute bottom-0 w-full h-24 overflow-hidden">
-            <div class="absolute inset-0 animate-wave">
-              <svg class="w-full h-full text-green-100 dark:text-green-900/20" preserveAspectRatio="none" viewBox="0 0 1440 54">
-                <path d="M0,0 C480,54 960,54 1440,0 L1440,54 L0,54 Z" class="fill-current"/>
-              </svg>
-            </div>
           </div>
         </div>
       }
     </slot>
   </div>
 
-  <div class="relative mx-auto h-full flex items-center">
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+  <div class="relative flex-1 flex items-center">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
       <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
         <!-- 内容区域 -->
         <div class="w-full md:w-[45%] text-center md:text-left self-center">
-          <div class="flex items-center justify-center md:justify-start mb-6">
-            <div class="w-16 h-16 relative">
-              <Image 
-                src={logoSvg}
-                alt="MoCard Logo" 
-                class="w-full h-full object-contain rounded-2xl shadow-lg"
-                style={{
-                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
-                }}
-              />
-            </div>
-            <div class="ml-4">
-              <h2 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">MoE Card</h2>
-              <p class="text-sm text-gray-600 dark:text-gray-300">{tagline}</p>
-            </div>
-          </div>
-          {
-            tagline && (
-              <p
-                class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase mb-2"
-                set:html={tagline}
-              />
-            )
-          }
           {
             title && (
               <h1
@@ -243,7 +203,7 @@ const cards = [
 
         <!-- 卡片堆叠区域 -->
         <div class="w-full md:w-[55%] relative self-center order-last md:order-none">
-          <div class="w-full">
+          <div class="w-full max-h-[60vh]">
             <StackedCards
               cards={cards}
               class="transform hover:scale-105 transition-transform duration-300"
@@ -281,7 +241,7 @@ const cards = [
       transform: translateX(0) translateZ(0) scaleY(1);
     }
     50% {
-      transform: translateX(-25%) translateZ(0) scaleY(0.8);
+      transform: translateX(-25%) translateZ(0) scaleY(0.95);
     }
     100% {
       transform: translateX(-50%) translateZ(0) scaleY(1);
@@ -304,8 +264,13 @@ const cards = [
   }
 
   .animate-wave {
-    animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-    transform-origin: 0% 100%;
+    animation: wave 20s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+    transform-origin: 0% 50%;
+  }
+
+  .animate-wave-delay {
+    animation: wave 18s cubic-bezier(0.55, 0.5, 0.45, 0.5) -9s infinite;
+    transform-origin: 0% 50%;
   }
 
   .animate-float {
@@ -356,5 +321,91 @@ const cards = [
 
   .animate-pulse-slow-delay {
     animation: pulse 4s ease-in-out 2s infinite;
+  }
+
+  .waves {
+    width: 100%;
+    height: 100px;
+    min-height: 100px;
+    max-height: 150px;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .wave-parallax > use {
+    animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+    fill: currentColor;
+  }
+
+  .wave1 {
+    color: rgba(74, 222, 128, 0.08);
+    animation-delay: -2s;
+    animation-duration: 7s;
+  }
+  
+  .wave2 {
+    color: rgba(74, 222, 128, 0.12);
+    animation-delay: -3s;
+    animation-duration: 10s;
+  }
+  
+  .wave3 {
+    color: rgba(74, 222, 128, 0.16);
+    animation-delay: -4s;
+    animation-duration: 13s;
+  }
+  
+  .wave4 {
+    color: rgba(74, 222, 128, 0.20);
+    animation-delay: -5s;
+    animation-duration: 20s;
+  }
+
+  @keyframes move-forever {
+    0% {
+      transform: translate3d(-90px,0,0);
+    }
+    100% { 
+      transform: translate3d(85px,0,0);
+    }
+  }
+
+  /* 暗色模式适配 */
+  :global(.dark) .wave1 { color: rgba(22, 101, 52, 0.08); }
+  :global(.dark) .wave2 { color: rgba(22, 101, 52, 0.12); }
+  :global(.dark) .wave3 { color: rgba(22, 101, 52, 0.16); }
+  :global(.dark) .wave4 { color: rgba(22, 101, 52, 0.20); }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .waves {
+      height: 80px;
+      min-height: 80px;
+    }
+  }
+
+  /* 添加响应式高度控制 */
+  :root {
+    --header-height: 72px;
+  }
+
+  @media (max-width: 768px) {
+    :root {
+      --header-height: 64px;
+    }
+  }
+
+  @media (max-height: 800px) {
+    .waves {
+      height: 60px;
+      min-height: 60px;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .waves {
+      height: 40px;
+      min-height: 40px;
+    }
   }
 </style>

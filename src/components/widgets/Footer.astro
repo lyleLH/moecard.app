@@ -38,10 +38,26 @@ const copyright = t('footer.copyright') as string;
         </div>
       </div>
 
+      <!-- Links -->
+      <div class="flex items-center space-x-4">
+        <a
+          href="/terms"
+          class="text-sm text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition duration-150"
+        >
+          Terms
+        </a>
+        <a
+          href="/privacy"
+          class="text-sm text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition duration-150"
+        >
+          Privacy
+        </a>
+      </div>
+
       <!-- Social Links -->
-      {socialLinks?.length ? (
-        <div class="flex items-center space-x-3">
-          {socialLinks.map(({ ariaLabel, href, icon }) => (
+      <div class="flex items-center space-x-3">
+        {socialLinks?.length ? (
+          socialLinks.map(({ ariaLabel, href, icon }) => (
             <a
               class="text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition duration-150"
               aria-label={ariaLabel}
@@ -51,9 +67,27 @@ const copyright = t('footer.copyright') as string;
             >
               {icon && <Icon name={icon} class="w-5 h-5" />}
             </a>
-          ))}
-        </div>
-      ) : null}
+          ))
+        ) : null}
+        <a
+          href="https://imhaoliu.com/"
+          class="text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition duration-150"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Blog"
+        >
+          <Icon name="tabler:news" class="w-5 h-5" />
+        </a>
+        <a
+          href="https://cloud.umami.is/share/SPo4BlDtkOUgzUTT/www.moecard.app"
+          class="text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition duration-150"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Analytics"
+        >
+          <Icon name="tabler:chart-bar" class="w-5 h-5" />
+        </a>
+      </div>
     </div>
   </div>
 </footer>
